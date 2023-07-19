@@ -73,6 +73,15 @@ public class DealersController {
 	}
 
 	@PostMapping
+	public ResponseEntity<ResponseData<?>> createDealer(@PathVariable(required = false) Long id,
+			@RequestBody Dealers dealer) {
+		Dealers updatedDealer = dealerRepository.save(dealer);
+		return new ResponseEntity<>(
+				new ResponseData<>("Dealer Created Successfully", HttpStatus.OK.value(), updatedDealer, null),
+				HttpStatus.OK);
+	}
+	
+	@PostMapping(value = { "/many" })
 	public ResponseEntity<Map<ResponseData<Dealers>, String>> createDealers(@RequestBody List<Dealers> customers) {
 		Map<ResponseData<Dealers>, String> responseMap = new HashMap<>();
 		for (Dealers customer : customers) {

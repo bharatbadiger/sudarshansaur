@@ -72,7 +72,7 @@ public class StockistsController {
 				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
 	}
 
-	@PostMapping
+	@PostMapping(value = { "/many" })
 	public ResponseEntity<Map<ResponseData<Stockists>, String>> createStockists(@RequestBody List<Stockists> stockists) {
 		Map<ResponseData<Stockists>, String> responseMap = new HashMap<>();
 		for (Stockists stockist : stockists) {
@@ -88,6 +88,15 @@ public class StockistsController {
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
+	@PostMapping
+	public ResponseEntity<ResponseData<?>> createStockist(
+			@RequestBody Stockists stockist) {
+		Stockists updatedStockist = stockistRepository.save(stockist);
+		return new ResponseEntity<>(
+				new ResponseData<>("Stockist created Successfully", HttpStatus.OK.value(), updatedStockist, null),
+				HttpStatus.OK);
+	}
+	
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateStockist(@PathVariable(required = false) Long id,
 			@RequestBody Stockists stockist) {

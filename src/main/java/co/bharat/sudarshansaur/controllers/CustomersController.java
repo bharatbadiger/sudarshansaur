@@ -73,7 +73,15 @@ public class CustomersController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Map<ResponseData<Customers>, String>> createCustomer(@RequestBody List<Customers> customers) {
+	public ResponseEntity<ResponseData<Customers>> createCustomer(@RequestBody Customers customer) {
+		Customers newCustomer = customerRepository.save(customer);
+		return new ResponseEntity<>(
+				new ResponseData<>("Customer Created Successfully", HttpStatus.OK.value(), newCustomer, null),
+				HttpStatus.OK);
+	}
+	
+	@PostMapping(value = { "/many" })
+	public ResponseEntity<Map<ResponseData<Customers>, String>> createCustomers(@RequestBody List<Customers> customers) {
 		Map<ResponseData<Customers>, String> responseMap = new HashMap<>();
 		for (Customers customer : customers) {
 			try {
