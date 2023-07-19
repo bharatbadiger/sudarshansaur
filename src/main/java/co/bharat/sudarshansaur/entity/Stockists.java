@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import lombok.AllArgsConstructor;
@@ -29,13 +28,10 @@ public class Stockists {
 	@GeneratedValue
 	private long stockistId;
 
-	@NotBlank
 	private String stockistName;
 
-	@NotBlank
 	private String mobileNo;
 
-	@NotBlank
 	private UserStatus status;
 	
 	private String email;

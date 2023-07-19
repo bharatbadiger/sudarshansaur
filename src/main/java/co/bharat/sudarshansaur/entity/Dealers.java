@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import lombok.AllArgsConstructor;
@@ -29,15 +28,12 @@ public class Dealers {
 	@GeneratedValue
 	private long dealerId;
 
-	@NotBlank
 	private String dealerName;
 	
 	private String password;
 
-	@NotBlank
 	private String mobileNo;
 
-	@NotBlank
 	private UserStatus status;
 	
 	private String email;
@@ -66,7 +62,5 @@ public class Dealers {
 	private String gstNumber;
 	
 	private String stockistId;
-	
-	
 
 }
