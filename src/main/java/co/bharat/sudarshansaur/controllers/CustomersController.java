@@ -51,13 +51,13 @@ public class CustomersController {
 		List<Customers> customers;
 
 		if (mobileNo != null && status != null) {
-			// Fetch customers by roleName and societyCode
+			// Fetch customers by mobileNo and status
 			customers = customerRepository.findByMobileNoAndStatus(mobileNo, status);
 		} else if (mobileNo != null) {
-			// Fetch customers by roleName and relationship
+			// Fetch customers by mobileNo
 			customers = customerRepository.findByMobileNo(mobileNo);
 		} else if (status != null) {
-			// Fetch customers by societyCode and relationship
+			// Fetch customers by status
 			customers = customerRepository.findByStatus(status);
 		} else {
 			// Return all customers if no params are specified
@@ -85,7 +85,7 @@ public class CustomersController {
 						customer, customer.getCustomerId()), e.getMessage());
 			}
 		}
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		return new ResponseEntity<>(responseMap	, HttpStatus.OK);
 	}
 
 	@PutMapping(value = { "/", "/{id}" })

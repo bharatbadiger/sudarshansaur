@@ -66,7 +66,9 @@ public class Customers {
 	private Date lastPurchaseDate;
 	
 	//@OneToMany(mappedBy = "customers", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OneToMany(mappedBy = "customers")
-    private List<WarrantyDetails> warrantyDetails;
+	/*
+	 * @OneToMany(mappedBy = "customers") private List<WarrantyDetails>
+	 * warrantyDetails;
+	 */
 	
 }
