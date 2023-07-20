@@ -3,13 +3,17 @@ package co.bharat.sudarshansaur.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import lombok.AllArgsConstructor;
@@ -65,7 +69,9 @@ public class Customers {
 	// @OneToMany(mappedBy = "customers", cascade = CascadeType.ALL, orphanRemoval =
 	// true)
 
-	@OneToMany(mappedBy = "customers")
+	//@OneToMany(mappedBy = "customers")
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference
 	private List<WarrantyDetails> warrantyDetails;
 
 }

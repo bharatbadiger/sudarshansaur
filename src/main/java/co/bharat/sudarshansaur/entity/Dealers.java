@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -61,6 +63,8 @@ public class Dealers {
 	
 	private String gstNumber;
 	
-	private String stockistId;
+	@ManyToOne
+	@JoinColumn(name="stockist_id")
+	private Stockists stockistId;
 
 }

@@ -1,16 +1,7 @@
-package co.bharat.sudarshansaur.entity;
+package co.bharat.sudarshansaur.dto;
 
 
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import lombok.AllArgsConstructor;
@@ -18,15 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "WarrantyDetails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WarrantyDetails {
+public class WarrantyDetailsDTO {
 	
-	@Id
 	private String warrantySerialNo;
 
 	private String invoiceNo;
@@ -57,16 +45,6 @@ public class WarrantyDetails {
 	
 	private String description;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    @JsonBackReference
-	private Customers customer;
+	private Long customer;
 	
-	//To Add issued date & dealer issued date
-	
-	//Unassign warranty only when no customer is assigned
-	//System
-	
-	
-
 }

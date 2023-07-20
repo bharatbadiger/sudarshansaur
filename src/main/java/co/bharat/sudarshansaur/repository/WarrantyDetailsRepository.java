@@ -9,7 +9,7 @@ import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 
 @RepositoryRestResource(collectionResourceRel = "warrantyDetails", path = "warrantyDetails")
-public interface WarrantyDetailsRepository extends JpaRepository<WarrantyDetails,Long>{
+public interface WarrantyDetailsRepository extends JpaRepository<WarrantyDetails,String>{
 
 	List<WarrantyDetails> findByInvoiceNoAndAllocationStatus(String invoiceNo, AllocationStatus allocationStatus);
 
