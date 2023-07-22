@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
+import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
+import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
@@ -19,6 +22,8 @@ import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
 @Service
 public class WarrantyRequestsService {
 
+	@Autowired
+	private WarrantyDetailsService warrantyDetailsService;
 	@Autowired
 	private WarrantyRequestsRepository warrantyRequestsRepository;
 	@Autowired
@@ -53,5 +58,20 @@ public class WarrantyRequestsService {
 		}
 		
 		return dto;
+	}
+	
+	@Transactional
+	public WarrantyRequests saveWarrantyRequests(WarrantyRequests warrantyRequests) {
+		if(UserType.CUSTOMER.equals(warrantyRequests.getInitUserType())) {
+			warrantyRequests.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
+		}
+		warrantyRequests.setDealers(dealersRepository.findById(warrantyRequests.getDealers().getDealerId()).orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
+		WarrantyRequests newWarrantyRequests = warrantyRequestsRepository.save(warrantyRequests);
+		if(AllocationStatus.APPROVED.equals(warrantyRequests.getAllocationStatus())) {
+			WarrantyDetails updatedWarrantyDetails = warrantyRequests.getWarrantyDetails();
+			warrantyDetailsService.updateWarrantyDetail(updatedWarrantyDetails.getWarrantySerialNo(), updatedWarrantyDetails);
+		}
+		return newWarrantyRequests;
+		
 	}
 }

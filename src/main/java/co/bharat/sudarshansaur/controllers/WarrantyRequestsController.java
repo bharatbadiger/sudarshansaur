@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +40,6 @@ public class WarrantyRequestsController {
 	private WarrantyRequestsService warrantyRequestsService;
 	@Autowired
 	private CustomersRepository customersRepository;
-	@Autowired
-	private DealersRepository dealersRepository;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<WarrantyRequestsDTO>> getWarrantyRequest(@PathVariable Long id) {
@@ -83,9 +79,7 @@ public class WarrantyRequestsController {
 
 	@PostMapping
 	public ResponseEntity<ResponseData<?>> createWarrantyRequests(@Validated @RequestBody WarrantyRequests warrantyRequests) {
-		warrantyRequests.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
-		warrantyRequests.setDealers(dealersRepository.findById(warrantyRequests.getDealers().getDealerId()).orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
-		WarrantyRequests newWarrantyRequests = warrantyRequestsRepository.save(warrantyRequests);
+		WarrantyRequests newWarrantyRequests = warrantyRequestsService.saveWarrantyRequests(warrantyRequests);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyRequest Created Successfully", HttpStatus.OK.value(), newWarrantyRequests, null),
 				HttpStatus.OK);
@@ -110,21 +104,8 @@ public class WarrantyRequestsController {
 
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateWarrantyRequest(@PathVariable(required = false) Long id,
-			@RequestBody WarrantyRequests warrantyRequest) {
-		Optional<WarrantyRequests> existingUser = warrantyRequestsRepository.findById(id);
-		if (!existingUser.isPresent()) {
-			return new ResponseEntity<>(new ResponseData<WarrantyRequests>("WarrantyRequest Not Found",
-					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
-
-		}
-		if (warrantyRequest.getCustomers() != null && warrantyRequest.getCustomers().getCustomerId() > 0) {
-			Optional<Customers> customerDetails = customersRepository
-					.findById(warrantyRequest.getCustomers().getCustomerId());
-			if (customerDetails.isPresent()) {
-				warrantyRequest.setCustomers(customerDetails.get());
-			}
-		}
-		WarrantyRequests updatedWarrantyRequests = warrantyRequestsRepository.save(warrantyRequest);
+			@RequestBody WarrantyRequests warrantyRequests) {
+		WarrantyRequests updatedWarrantyRequests = warrantyRequestsService.saveWarrantyRequests(warrantyRequests);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyRequest Updated Successfully", HttpStatus.OK.value(), updatedWarrantyRequests, null),
 				HttpStatus.OK);
