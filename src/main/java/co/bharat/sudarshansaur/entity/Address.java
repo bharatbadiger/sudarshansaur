@@ -1,8 +1,6 @@
 package co.bharat.sudarshansaur.entity;
 
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,25 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
-    @Size(max = 100)
-    private String addressLine1;
+	private String addressLine1;
 
-    @Size(max = 100)
-    private String addressLine2;
+	private String addressLine2;
 
-    @Size(max = 100)
-    private String city;
+	private String city;
 
-    @NotNull
-    @Size(max = 100)
-    private String state;
+	private String state;
 
-    @NotNull
-    @Size(max = 100)
-    private String country;
+	private String country = "India";
 
-    @NotNull
-    @Size(max = 6)
-    private String zipCode;
+	private String zipCode;
 
 }

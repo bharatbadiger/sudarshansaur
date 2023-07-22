@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +44,13 @@ public class CustomersController {
 		return new ResponseEntity<>(
 				new ResponseData<Customers>("No Customer Found", HttpStatus.NOT_FOUND.value(), null, null),
 				HttpStatus.NOT_FOUND);
+	}
+	
+	@PostMapping(value = { "/authenticate" })
+	public ResponseEntity<ResponseData<Customers>> authenticateCustomer(@Validated @RequestBody Customers customer) {
+		Customers customer1 = customerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("No Customer Found"));
+		return new ResponseEntity<>(new ResponseData<Customers>("Customer Fetched Successfully",
+					HttpStatus.OK.value(), customer1, null), HttpStatus.OK);
 	}
 
 	@GetMapping

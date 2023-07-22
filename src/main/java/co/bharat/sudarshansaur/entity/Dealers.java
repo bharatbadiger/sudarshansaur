@@ -12,6 +12,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import co.bharat.sudarshansaur.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +34,8 @@ public class Dealers {
 	private long dealerId;
 
 	private String dealerName;
-	
+
+	@JsonIgnore
 	private String password;
 
 	private String mobileNo;
@@ -65,6 +69,7 @@ public class Dealers {
 	
 	@ManyToOne
 	@JoinColumn(name="stockist_id")
-	private Stockists stockistId;
+	@JsonBackReference
+	private Stockists stockists;
 
 }

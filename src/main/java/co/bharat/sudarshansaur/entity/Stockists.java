@@ -2,13 +2,20 @@ package co.bharat.sudarshansaur.entity;
 
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import lombok.AllArgsConstructor;
@@ -29,6 +36,9 @@ public class Stockists {
 	private long stockistId;
 
 	private String stockistName;
+	
+	@JsonIgnore
+	private String password;
 
 	private String mobileNo;
 
@@ -58,5 +68,9 @@ public class Stockists {
 	private String businessName;
 	
 	private String gstNumber;
+	
+	@OneToMany(mappedBy = "stockists", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference
+	private List<Dealers> dealers;
 	
 }

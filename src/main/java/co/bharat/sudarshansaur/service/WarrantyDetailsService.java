@@ -25,7 +25,7 @@ public class WarrantyDetailsService {
 	}
 	
 	public WarrantyDetailsDTO getWarrantyDetails(String id) {
-		WarrantyDetails warrantyDetails = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetail Found"));;
+		WarrantyDetails warrantyDetails = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetail Found"));
 		return convertToDTO(warrantyDetails);
 	}
 

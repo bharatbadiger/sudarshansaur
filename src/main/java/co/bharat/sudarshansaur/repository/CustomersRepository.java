@@ -1,6 +1,7 @@
 package co.bharat.sudarshansaur.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +16,7 @@ public interface CustomersRepository extends JpaRepository<Customers,Long>{
 	List<Customers> findByMobileNo(String mobileNo);
 
 	List<Customers> findByStatus(UserStatus status);
+	
+	Optional<Customers> findByEmailAndPassword(String email,String password);
 
 }

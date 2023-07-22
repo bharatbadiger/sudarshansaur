@@ -1,6 +1,7 @@
 package co.bharat.sudarshansaur.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +16,7 @@ public interface StockistsRepository extends JpaRepository<Stockists,Long>{
 	List<Stockists> findByMobileNo(String mobileNo);
 
 	List<Stockists> findByStatus(UserStatus status);
+	
+	Optional<Stockists> findByEmailAndPassword(String email, String password);
 
 }

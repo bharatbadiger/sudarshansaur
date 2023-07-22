@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
+import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.repository.StockistsRepository;
@@ -41,6 +45,13 @@ public class StockistsController {
 		return new ResponseEntity<>(
 				new ResponseData<Stockists>("No Stockist Found", HttpStatus.NOT_FOUND.value(), null, null),
 				HttpStatus.NOT_FOUND);
+	}
+	
+	@PostMapping(value = { "/authenticate" })
+	public ResponseEntity<ResponseData<Stockists>> authenticateCustomer(@Validated @RequestBody Customers customer) {
+		Stockists stockist = stockistRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("No Stockist Found"));
+		return new ResponseEntity<>(new ResponseData<Stockists>("Stockist Fetched Successfully",
+					HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
 	}
 
 	@GetMapping
