@@ -3,6 +3,10 @@ package co.bharat.sudarshansaur.entity;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
+import co.bharat.sudarshansaur.interfaces.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Dealers {
+public class Dealers implements Users {
 	
 	@Id
 	@GeneratedValue
@@ -43,7 +48,8 @@ public class Dealers {
 	private UserStatus status;
 	
 	private String email;
-
+	
+	@Embedded
 	private Address address;
 	
 	private Date createdOn;
@@ -62,6 +68,17 @@ public class Dealers {
 	private Date lastLogin;
 	
 	private String image;
+	
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "addressLine1", column = @Column(name = "business_addressLine1")),
+        @AttributeOverride(name = "addressLine2", column = @Column(name = "business_addressLine2")),
+        @AttributeOverride(name = "city", column = @Column(name = "business_city")),
+        @AttributeOverride(name = "state", column = @Column(name = "business_state")),
+        @AttributeOverride(name = "country", column = @Column(name = "business_country")),
+        @AttributeOverride(name = "zipCode", column = @Column(name = "business_zipCode")),
+    })
+	private Address businessAddress;
 	
 	private String businessName;
 	

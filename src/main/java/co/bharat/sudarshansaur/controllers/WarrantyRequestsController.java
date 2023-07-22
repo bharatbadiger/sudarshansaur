@@ -23,66 +23,61 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
-import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
+import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
 import co.bharat.sudarshansaur.entity.Customers;
-import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
-import co.bharat.sudarshansaur.repository.StockistsRepository;
-import co.bharat.sudarshansaur.repository.WarrantyDetailsRepository;
 import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
-import co.bharat.sudarshansaur.service.WarrantyDetailsService;
+import co.bharat.sudarshansaur.service.WarrantyRequestsService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping(value = "/saur/warrantyRequests")
 public class WarrantyRequestsController {
 	@Autowired
-	private WarrantyDetailsRepository warrantyDetailsRepository;
-	@Autowired
-	private WarrantyDetailsService warrantyDetailsService;
-	@Autowired
 	private WarrantyRequestsRepository warrantyRequestsRepository;
+	@Autowired
+	private WarrantyRequestsService warrantyRequestsService;
 	@Autowired
 	private CustomersRepository customersRepository;
 	@Autowired
 	private DealersRepository dealersRepository;
 
 	@GetMapping(value = { "/{id}" })
-	public ResponseEntity<ResponseData<WarrantyDetailsDTO>> getWarrantyDetail(@PathVariable String id) {
-		WarrantyDetailsDTO warrantyDetails1 = warrantyDetailsService.getWarrantyDetails(id);
-		return new ResponseEntity<>(new ResponseData<WarrantyDetailsDTO>("WarrantyDetail Fetched Successfully",
-				HttpStatus.OK.value(), warrantyDetails1, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<WarrantyRequestsDTO>> getWarrantyRequest(@PathVariable Long id) {
+		WarrantyRequestsDTO warrantyRequests1 = warrantyRequestsService.getWarrantyRequests(id);
+		return new ResponseEntity<>(new ResponseData<WarrantyRequestsDTO>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
 	}
 
 	@GetMapping
-	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsByAttributes(
+	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestsByAttributes(
 			@RequestParam(name = "mobileNo", required = false) String invoiceNo,
 			@RequestParam(name = "allocationStatus", required = false) AllocationStatus allocationStatus) {
 
-		List<WarrantyDetails> customers;
+		List<WarrantyRequests> customers=null;
 
 		if (invoiceNo != null && allocationStatus != null) {
 			// Fetch users by roleName and societyCode
-			customers = warrantyDetailsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
+			//customers = warrantyRequestsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
 		} else if (invoiceNo != null) {
 			// Fetch users by roleName and relationship
-			customers = warrantyDetailsRepository.findByInvoiceNo(invoiceNo);
+			//customers = warrantyRequestsRepository.findByInvoiceNo(invoiceNo);
 		} else if (allocationStatus != null) {
 			// Fetch users by societyCode and relationship
-			customers = warrantyDetailsRepository.findByAllocationStatus(allocationStatus);
+			//customers = warrantyRequestsRepository.findByAllocationStatus(allocationStatus);
 		} else {
 			// Return all users if no params are specified
-			customers = warrantyDetailsRepository.findAll();
+			customers = warrantyRequestsRepository.findAll();
 		}
 
-		if (customers.isEmpty()) {
-			return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("No WarrantyDetails Found",
+		if (customers==null) {
+			return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("No WarrantyRequests Found",
 					HttpStatus.NOT_FOUND.value(), customers, null), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+		return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("WarrantyRequests Fetched Successfully",
 				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
 	}
 
@@ -92,52 +87,52 @@ public class WarrantyRequestsController {
 		warrantyRequests.setDealers(dealersRepository.findById(warrantyRequests.getDealers().getDealerId()).orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
 		WarrantyRequests newWarrantyRequests = warrantyRequestsRepository.save(warrantyRequests);
 		return new ResponseEntity<>(
-				new ResponseData<>("WarrantyDetail Created Successfully", HttpStatus.OK.value(), newWarrantyRequests, null),
+				new ResponseData<>("WarrantyRequest Created Successfully", HttpStatus.OK.value(), newWarrantyRequests, null),
 				HttpStatus.OK);
 	}
 
 	@PostMapping(value = { "/many" })
-	public ResponseEntity<Map<ResponseData<WarrantyDetails>, String>> createWarrantyDetails(
-			@RequestBody List<WarrantyDetails> warrantyDetails) {
-		Map<ResponseData<WarrantyDetails>, String> responseMap = new HashMap<>();
-		for (WarrantyDetails warrantyDetail : warrantyDetails) {
+	public ResponseEntity<Map<ResponseData<WarrantyRequests>, String>> createWarrantyRequests(
+			@RequestBody List<WarrantyRequests> warrantyRequests) {
+		Map<ResponseData<WarrantyRequests>, String> responseMap = new HashMap<>();
+		for (WarrantyRequests warrantyRequest : warrantyRequests) {
 			try {
-				WarrantyDetails newStockist = warrantyDetailsRepository.save(warrantyDetail);
-				responseMap.put(new ResponseData<WarrantyDetails>("WarrantyDetail Created Successfully",
-						HttpStatus.OK.value(), newStockist, warrantyDetail.getWarrantySerialNo()), "Success");
+				WarrantyRequests newStockist = warrantyRequestsRepository.save(warrantyRequest);
+				responseMap.put(new ResponseData<WarrantyRequests>("WarrantyRequest Created Successfully",
+						HttpStatus.OK.value(), newStockist, warrantyRequest.getWarrantyDetails().getWarrantySerialNo()), "Success");
 			} catch (Exception e) {
-				responseMap.put(new ResponseData<WarrantyDetails>("WarrantyDetail Creation Failed",
-						HttpStatus.OK.value(), warrantyDetail, warrantyDetail.getWarrantySerialNo()), e.getMessage());
+				responseMap.put(new ResponseData<WarrantyRequests>("WarrantyRequest Creation Failed",
+						HttpStatus.OK.value(), warrantyRequest, warrantyRequest.getWarrantyDetails().getWarrantySerialNo()), e.getMessage());
 			}
 		}
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@PutMapping(value = { "/", "/{id}" })
-	public ResponseEntity<ResponseData<?>> updateWarrantyDetail(@PathVariable(required = false) String id,
-			@RequestBody WarrantyDetails warrantyDetail) {
-		Optional<WarrantyDetails> existingUser = warrantyDetailsRepository.findById(id);
+	public ResponseEntity<ResponseData<?>> updateWarrantyRequest(@PathVariable(required = false) Long id,
+			@RequestBody WarrantyRequests warrantyRequest) {
+		Optional<WarrantyRequests> existingUser = warrantyRequestsRepository.findById(id);
 		if (!existingUser.isPresent()) {
-			return new ResponseEntity<>(new ResponseData<WarrantyDetails>("WarrantyDetail Not Found",
+			return new ResponseEntity<>(new ResponseData<WarrantyRequests>("WarrantyRequest Not Found",
 					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
 
 		}
-		if (warrantyDetail.getCustomer() != null && warrantyDetail.getCustomer().getCustomerId() > 0) {
+		if (warrantyRequest.getCustomers() != null && warrantyRequest.getCustomers().getCustomerId() > 0) {
 			Optional<Customers> customerDetails = customersRepository
-					.findById(warrantyDetail.getCustomer().getCustomerId());
+					.findById(warrantyRequest.getCustomers().getCustomerId());
 			if (customerDetails.isPresent()) {
-				warrantyDetail.setCustomer(customerDetails.get());
+				warrantyRequest.setCustomers(customerDetails.get());
 			}
 		}
-		WarrantyDetails updatedWarrantyDetails = warrantyDetailsRepository.save(warrantyDetail);
+		WarrantyRequests updatedWarrantyRequests = warrantyRequestsRepository.save(warrantyRequest);
 		return new ResponseEntity<>(
-				new ResponseData<>("WarrantyDetail Updated Successfully", HttpStatus.OK.value(), updatedWarrantyDetails, null),
+				new ResponseData<>("WarrantyRequest Updated Successfully", HttpStatus.OK.value(), updatedWarrantyRequests, null),
 				HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteWarrantyDetail(@PathVariable("id") String id) {
-		warrantyDetailsRepository.deleteById(id);
+	public ResponseEntity<Void> deleteWarrantyRequest(@PathVariable("id") Long id) {
+		warrantyRequestsRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -15,6 +15,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import co.bharat.sudarshansaur.enums.AllocationStatus;
+import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,11 +39,11 @@ public class WarrantyRequests {
 
 	private AllocationStatus allocationStatus;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dealer_id")
 	private Dealers dealers;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
 	private Customers customers;
 	
@@ -61,6 +62,8 @@ public class WarrantyRequests {
 	protected void onUpdate() {
 		updatedOn = new Date();
 	}
+	
+	private UserType initUserType;
 	
 	private String initiatedBy;
 

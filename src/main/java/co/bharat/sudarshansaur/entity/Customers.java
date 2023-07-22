@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
+import co.bharat.sudarshansaur.interfaces.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Customers {
+public class Customers implements Users{
 
 	@Id
 	@GeneratedValue
@@ -45,6 +47,7 @@ public class Customers {
 
 	private String email;
 
+	@Embedded
 	private Address address;
 
 	private Date createdOn;
