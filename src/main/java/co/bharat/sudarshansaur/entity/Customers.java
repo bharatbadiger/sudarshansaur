@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,10 +42,12 @@ public class Customers implements Users{
 	@JsonIgnore
 	private String password;
 
+	@Column(unique = true)
 	private String mobileNo;
 
 	private UserStatus status;
 
+	@Column(unique = true)
 	private String email;
 
 	@Embedded

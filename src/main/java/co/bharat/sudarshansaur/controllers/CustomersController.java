@@ -48,7 +48,7 @@ public class CustomersController {
 	
 	@PostMapping(value = { "/authenticate" })
 	public ResponseEntity<ResponseData<Customers>> authenticateCustomer(@Validated @RequestBody Customers customer) {
-		Customers customer1 = customerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("No Customer Found"));
+		Customers customer1 = customerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("Incorrect email and password"));
 		return new ResponseEntity<>(new ResponseData<Customers>("Customer Fetched Successfully",
 					HttpStatus.OK.value(), customer1, null), HttpStatus.OK);
 	}

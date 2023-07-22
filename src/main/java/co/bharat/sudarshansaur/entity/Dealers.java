@@ -3,6 +3,7 @@ package co.bharat.sudarshansaur.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,10 +41,12 @@ public class Dealers implements Users {
 	@JsonIgnore
 	private String password;
 
+	@Column(unique = true)
 	private String mobileNo;
 
 	private UserStatus status;
 	
+	@Column(unique = true)
 	private String email;
 	
 	@Embedded

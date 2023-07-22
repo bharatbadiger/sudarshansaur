@@ -49,7 +49,7 @@ public class DealersController {
 	
 	@PostMapping(value = { "/authenticate" })
 	public ResponseEntity<ResponseData<Dealers>> authenticateCustomer(@Validated @RequestBody Customers customer) {
-		Dealers dealer = dealerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("No Stockist Found"));
+		Dealers dealer = dealerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("Incorrect email and password"));
 		return new ResponseEntity<>(new ResponseData<Dealers>("Stockist Fetched Successfully",
 					HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
 	}

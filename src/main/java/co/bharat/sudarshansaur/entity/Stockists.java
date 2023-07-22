@@ -1,10 +1,10 @@
 package co.bharat.sudarshansaur.entity;
 
-
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,42 +32,46 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Stockists implements Users {
-	
+
 	@Id
 	@GeneratedValue
 	private long stockistId;
 
 	private String stockistName;
-	
+
 	@JsonIgnore
 	private String password;
 
+	@Column(unique = true)
 	private String mobileNo;
 
 	private UserStatus status;
-	
+
+	@Column(unique = true)
 	private String email;
 
 	@Embedded
 	private Address address;
-	
+
 	private Date createdOn;
-    @PrePersist
-    protected void onCreate() {
-    	createdOn = new Date();
-    	updatedOn = createdOn;
-    }
-	
+
+	@PrePersist
+	protected void onCreate() {
+		createdOn = new Date();
+		updatedOn = createdOn;
+	}
+
 	private Date updatedOn;
-    @PreUpdate
-    protected void onUpdate() {
-    	updatedOn = new Date();
-    }
-	
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedOn = new Date();
+	}
+
 	private Date lastLogin;
-	
+
 	private String image;
-	
+
 	/*
 	 * @Embedded
 	 * 
@@ -91,13 +95,13 @@ public class Stockists implements Users {
 	 * "business_zipCode")), })
 	 */
 	private String businessAddress;
-	
+
 	private String businessName;
-	
+
 	private String gstNumber;
-	
+
 	@OneToMany(mappedBy = "stockists", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private List<Dealers> dealers;
-	
+
 }

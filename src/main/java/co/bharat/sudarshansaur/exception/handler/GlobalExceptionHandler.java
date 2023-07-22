@@ -1,7 +1,11 @@
 package co.bharat.sudarshansaur.exception.handler;
 
-import javax.persistence.EntityNotFoundException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,7 +16,14 @@ import co.bharat.sudarshansaur.dto.ResponseData;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({ConstraintViolationException.class, DataIntegrityViolationException.class,SQLIntegrityConstraintViolationException.class})
+    public ResponseEntity<ResponseData<String>> handleConstraintViolationException(RuntimeException ex) {
+    	ResponseData<String> responseData = ResponseData.<String>builder()
+				.statusCode(HttpStatus.CONFLICT.value()).message(ex.getLocalizedMessage()).data(null).build();
+		return new ResponseEntity<>(responseData, HttpStatus.CONFLICT);
+    }
+	
+	@ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ResponseData<String>> handleEntityNotFoundException(EntityNotFoundException ex) {
     	ResponseData<String> responseData = ResponseData.<String>builder()
 				.statusCode(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).data(null).build();
