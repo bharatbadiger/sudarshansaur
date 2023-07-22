@@ -46,7 +46,9 @@ public class CustomersService {
         List<String> nullPropertyNames = new ArrayList<>();
         for (PropertyDescriptor propertyDescriptor : beanWrapper.getPropertyDescriptors()) {
             String propertyName = propertyDescriptor.getName();
-            if (beanWrapper.getPropertyValue(propertyName) == null) {
+            Object propertyValue = beanWrapper.getPropertyValue(propertyName);
+            // Exclude properties with numeric types from being considered for updating
+            if (propertyValue == null || (propertyValue instanceof String && ((String) propertyValue).isEmpty())|| (long.class.isAssignableFrom(propertyDescriptor.getPropertyType()))) {
                 nullPropertyNames.add(propertyName);
             }
         }
