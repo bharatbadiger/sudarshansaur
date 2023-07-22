@@ -27,6 +27,7 @@ import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.repository.StockistsRepository;
+import co.bharat.sudarshansaur.service.StockistsService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -34,6 +35,8 @@ import co.bharat.sudarshansaur.repository.StockistsRepository;
 public class StockistsController {
 	@Autowired
 	private StockistsRepository stockistRepository;
+	@Autowired
+	private StockistsService stockistsService;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<Stockists>> getDealer(@PathVariable Long id) {
@@ -111,14 +114,7 @@ public class StockistsController {
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateStockist(@PathVariable(required = false) Long id,
 			@RequestBody Stockists stockist) {
-		Optional<Stockists> existingStockist = stockistRepository.findById(id);
-		if (!existingStockist.isPresent()) {
-			return new ResponseEntity<>(
-					new ResponseData<Stockists>("Stockist Not Found", HttpStatus.NOT_FOUND.value(), null, null),
-					HttpStatus.NOT_FOUND);
-
-		}
-		Stockists updatedStockist = stockistRepository.save(stockist);
+		Stockists updatedStockist = stockistsService.updateStockist(id, stockist);
 		return new ResponseEntity<>(
 				new ResponseData<>("Stockist Updated Successfully", HttpStatus.OK.value(), updatedStockist, null),
 				HttpStatus.OK);

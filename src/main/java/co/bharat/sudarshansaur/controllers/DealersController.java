@@ -27,6 +27,7 @@ import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Dealers;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.repository.DealersRepository;
+import co.bharat.sudarshansaur.service.DealersService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -34,6 +35,8 @@ import co.bharat.sudarshansaur.repository.DealersRepository;
 public class DealersController {
 	@Autowired
 	private DealersRepository dealerRepository;
+	@Autowired
+	private DealersService dealersService;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<Dealers>> getDealer(@PathVariable Long id) {
@@ -111,14 +114,7 @@ public class DealersController {
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateDealer(@PathVariable(required = false) Long id,
 			@RequestBody Dealers dealer) {
-		Optional<Dealers> existingDealer = dealerRepository.findById(id);
-		if (!existingDealer.isPresent()) {
-			return new ResponseEntity<>(
-					new ResponseData<Dealers>("Dealer Not Found", HttpStatus.NOT_FOUND.value(), null, null),
-					HttpStatus.NOT_FOUND);
-
-		}
-		Dealers updatedDealer = dealerRepository.save(dealer);
+		Dealers updatedDealer = dealersService.updateDealer(id, dealer);
 		return new ResponseEntity<>(
 				new ResponseData<>("Dealer Updated Successfully", HttpStatus.OK.value(), updatedDealer, null),
 				HttpStatus.OK);

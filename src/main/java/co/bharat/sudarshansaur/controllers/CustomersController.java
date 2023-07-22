@@ -26,6 +26,7 @@ import co.bharat.sudarshansaur.dto.ResponseData;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
+import co.bharat.sudarshansaur.service.CustomersService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,6 +34,9 @@ import co.bharat.sudarshansaur.repository.CustomersRepository;
 public class CustomersController {
 	@Autowired
 	private CustomersRepository customerRepository;
+	
+	@Autowired
+	private CustomersService customerService;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<Customers>> getCustomer(@PathVariable Long id) {
@@ -109,14 +113,7 @@ public class CustomersController {
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateCustomer(@PathVariable(required = false) Long id,
 			@RequestBody Customers customer) {
-		Optional<Customers> existingCustomer = customerRepository.findById(id);
-		if (!existingCustomer.isPresent()) {
-			return new ResponseEntity<>(
-					new ResponseData<Customers>("Customer Not Found", HttpStatus.NOT_FOUND.value(), null, null),
-					HttpStatus.NOT_FOUND);
-
-		}
-		Customers updatedCustomer = customerRepository.save(customer);
+		Customers updatedCustomer = customerService.updateCustomer(id, customer);
 		return new ResponseEntity<>(
 				new ResponseData<>("Customer Updated Successfully", HttpStatus.OK.value(), updatedCustomer, null),
 				HttpStatus.OK);
