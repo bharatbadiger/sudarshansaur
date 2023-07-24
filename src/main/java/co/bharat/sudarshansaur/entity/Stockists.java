@@ -15,7 +15,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
@@ -39,9 +38,8 @@ public class Stockists implements Users {
 
 	private String stockistName;
 
-	@JsonIgnore
 	private String password;
-
+	
 	@Column(unique = true)
 	private String mobileNo;
 

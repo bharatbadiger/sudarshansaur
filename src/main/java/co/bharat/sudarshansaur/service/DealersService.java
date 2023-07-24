@@ -3,6 +3,7 @@ package co.bharat.sudarshansaur.service;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.bharat.sudarshansaur.dto.DealersResponseDTO;
 import co.bharat.sudarshansaur.entity.Dealers;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 
@@ -25,12 +27,13 @@ public class DealersService {
 		return dealersRepository.findAll();
 	}
 	
-	public Dealers getDealer(Long id) {
-		return dealersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Dealer Found"));
+	public DealersResponseDTO getDealer(Long id) {
+		return convertToDTO(dealersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
 	}
 	
-	public Dealers saveDealer(Dealers dealer) {
-		return dealersRepository.save(dealer);
+	public DealersResponseDTO saveDealer(Dealers dealer) {
+		Dealers newDealer = dealersRepository.save(dealer);
+		return convertToDTO(newDealer);
 	}
 
 	//Updates ONLY the properties which are passed in the request data
@@ -38,6 +41,10 @@ public class DealersService {
 		Dealers existingDealer = dealersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Dealer Found"));
 		BeanUtils.copyProperties(updatedDealer, existingDealer, getNullPropertyNames(updatedDealer));
 		return dealersRepository.save(existingDealer);
+	}
+	
+	public DealersResponseDTO updateDealerAndReturnDTO(Long id, Dealers updatedDealer) {
+		return convertToDTO(updateDealer(id, updatedDealer));
 	}
 	
 	//Find the properties which are not present in the request
@@ -54,4 +61,19 @@ public class DealersService {
         }
         return nullPropertyNames.toArray(new String[0]);
     }
+    
+	private DealersResponseDTO convertToDTO(Dealers dealers) {
+		DealersResponseDTO dto = new DealersResponseDTO();
+		BeanUtils.copyProperties(dealers, dto);
+		return dto;
+	}
+	
+	public List<DealersResponseDTO> convertToDTOList(List<Dealers> dealersList) {
+		return dealersList.stream().map(this::convertToDTO).collect(Collectors.toList());
+	}
+	
+	public DealersResponseDTO findByEmailAndPassword(Dealers dealer) {
+		return convertToDTO(dealersRepository.findByEmailAndPassword(dealer.getEmail(), dealer.getPassword())
+				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
+	}
 }

@@ -11,6 +11,10 @@ import co.bharat.sudarshansaur.enums.UserStatus;
 //@RepositoryRestResource(collectionResourceRel = "dealers", path = "dealers")
 public interface DealersRepository extends JpaRepository<Dealers,Long>{
 
+	List<Dealers> findByMobileNoAndEmailAndStatus(String mobileNo, String email, UserStatus status);
+	
+	List<Dealers> findByMobileNoAndEmail(String mobileNo, String email);
+	
 	List<Dealers> findByMobileNoAndStatus(String mobileNo, UserStatus status);
 
 	List<Dealers> findByMobileNo(String mobileNo);

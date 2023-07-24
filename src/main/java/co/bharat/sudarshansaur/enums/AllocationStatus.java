@@ -5,5 +5,6 @@ public enum AllocationStatus {
 	INITIATED,
 	PROCESSING,
 	ALLOCATED,
-	APPROVED
+	APPROVED,
+	DECLINED
 }

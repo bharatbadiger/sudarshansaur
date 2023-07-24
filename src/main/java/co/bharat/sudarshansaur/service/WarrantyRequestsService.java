@@ -17,6 +17,7 @@ import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
+import co.bharat.sudarshansaur.repository.WarrantyDetailsRepository;
 import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
 
 @Service
@@ -24,6 +25,8 @@ public class WarrantyRequestsService {
 
 	@Autowired
 	private WarrantyDetailsService warrantyDetailsService;
+	@Autowired
+	private WarrantyDetailsRepository warrantyDetailsRepository;
 	@Autowired
 	private WarrantyRequestsRepository warrantyRequestsRepository;
 	@Autowired
@@ -62,6 +65,9 @@ public class WarrantyRequestsService {
 	
 	@Transactional
 	public WarrantyRequests saveWarrantyRequests(WarrantyRequests warrantyRequests) {
+		if(warrantyRequests.getWarrantyDetails().getWarrantySerialNo() !=null) {
+			warrantyRequests.setWarrantyDetails(warrantyDetailsRepository.findById(warrantyRequests.getWarrantyDetails().getWarrantySerialNo()).orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found")));
+		}
 		if(UserType.CUSTOMER.equals(warrantyRequests.getInitUserType())) {
 			warrantyRequests.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
 		}

@@ -3,7 +3,6 @@ package co.bharat.sudarshansaur.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
-import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
-import co.bharat.sudarshansaur.repository.CustomersRepository;
-import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
 import co.bharat.sudarshansaur.service.WarrantyRequestsService;
 
@@ -38,8 +34,6 @@ public class WarrantyRequestsController {
 	private WarrantyRequestsRepository warrantyRequestsRepository;
 	@Autowired
 	private WarrantyRequestsService warrantyRequestsService;
-	@Autowired
-	private CustomersRepository customersRepository;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<WarrantyRequestsDTO>> getWarrantyRequest(@PathVariable Long id) {
@@ -50,15 +44,15 @@ public class WarrantyRequestsController {
 
 	@GetMapping
 	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestsByAttributes(
-			@RequestParam(name = "mobileNo", required = false) String invoiceNo,
+			@RequestParam(name = "warrantySerialNo", required = false) String warrantySerialNo,
 			@RequestParam(name = "allocationStatus", required = false) AllocationStatus allocationStatus) {
 
-		List<WarrantyRequests> customers=null;
+		List<WarrantyRequests> warrantyRequestsList=null;
 
-		if (invoiceNo != null && allocationStatus != null) {
+		if (warrantySerialNo != null && allocationStatus != null) {
 			// Fetch users by roleName and societyCode
 			//customers = warrantyRequestsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
-		} else if (invoiceNo != null) {
+		} else if (warrantySerialNo != null) {
 			// Fetch users by roleName and relationship
 			//customers = warrantyRequestsRepository.findByInvoiceNo(invoiceNo);
 		} else if (allocationStatus != null) {
@@ -66,15 +60,15 @@ public class WarrantyRequestsController {
 			//customers = warrantyRequestsRepository.findByAllocationStatus(allocationStatus);
 		} else {
 			// Return all users if no params are specified
-			customers = warrantyRequestsRepository.findAll();
+			warrantyRequestsList = warrantyRequestsRepository.findAllByOrderByCreatedOnDesc();
 		}
 
-		if (customers==null) {
+		if (warrantyRequestsList==null) {
 			return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("No WarrantyRequests Found",
-					HttpStatus.NOT_FOUND.value(), customers, null), HttpStatus.NOT_FOUND);
+					HttpStatus.NOT_FOUND.value(), warrantyRequestsList, null), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("WarrantyRequests Fetched Successfully",
-				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
+				HttpStatus.OK.value(), warrantyRequestsList, null), HttpStatus.OK);
 	}
 
 	@PostMapping

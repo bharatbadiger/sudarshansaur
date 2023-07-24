@@ -3,6 +3,7 @@ package co.bharat.sudarshansaur.service;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.bharat.sudarshansaur.dto.CustomersResponseDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 
@@ -25,12 +27,13 @@ public class CustomersService {
 		return customersRepository.findAll();
 	}
 	
-	public Customers getCustomer(Long id) {
-		return customersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Customer Found"));
+	public CustomersResponseDTO getCustomer(Long id) {
+		return convertToDTO(customersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
 	}
 	
-	public Customers saveCustomer(Customers customer) {
-		return customersRepository.save(customer);
+	public CustomersResponseDTO saveCustomer(Customers customer) {
+		Customers newCustomer = customersRepository.save(customer);
+		return convertToDTO(newCustomer);
 	}
 
 	//Updates ONLY the properties which are passed in the request data
@@ -38,6 +41,10 @@ public class CustomersService {
 		Customers existingCustomer = customersRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Customer Found"));
 		BeanUtils.copyProperties(updatedCustomer, existingCustomer, getNullPropertyNames(updatedCustomer));
 		return customersRepository.save(existingCustomer);
+	}
+	
+	public CustomersResponseDTO updateCustomerAndReturnDTO(Long id, Customers updatedCustomer) {
+		return convertToDTO(updateCustomer(id,updatedCustomer));
 	}
 	
 	//Find the properties which are not present in the request
@@ -54,4 +61,19 @@ public class CustomersService {
         }
         return nullPropertyNames.toArray(new String[0]);
     }
+    
+	private CustomersResponseDTO convertToDTO(Customers customers) {
+		CustomersResponseDTO dto = new CustomersResponseDTO();
+		BeanUtils.copyProperties(customers, dto);
+		return dto;
+	}
+	
+	public List<CustomersResponseDTO> convertToDTOList(List<Customers> stockistsList) {
+		return stockistsList.stream().map(this::convertToDTO).collect(Collectors.toList());
+	}
+	
+	public CustomersResponseDTO findByEmailAndPassword(Customers customer) {
+		return convertToDTO(customersRepository.findByEmailAndPassword(customer.getEmail(), customer.getPassword())
+				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
+	}
 }

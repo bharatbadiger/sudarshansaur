@@ -15,7 +15,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.interfaces.Users;
@@ -38,8 +37,13 @@ public class Dealers implements Users {
 
 	private String dealerName;
 
-	@JsonIgnore
 	private String password;
+	
+	/*
+	 * @JsonIgnore public String getPassword(){ return password; }
+	 * 
+	 * public void setPassword(String password) { this.password= password; }
+	 */
 
 	@Column(unique = true)
 	private String mobileNo;

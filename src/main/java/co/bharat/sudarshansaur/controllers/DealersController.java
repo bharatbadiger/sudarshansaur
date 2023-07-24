@@ -3,9 +3,6 @@ package co.bharat.sudarshansaur.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.bharat.sudarshansaur.dto.DealersResponseDTO;
 import co.bharat.sudarshansaur.dto.ResponseData;
-import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Dealers;
 import co.bharat.sudarshansaur.enums.UserStatus;
+import co.bharat.sudarshansaur.interfaces.Users;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.service.DealersService;
 
@@ -39,82 +37,84 @@ public class DealersController {
 	private DealersService dealersService;
 
 	@GetMapping(value = { "/{id}" })
-	public ResponseEntity<ResponseData<Dealers>> getDealer(@PathVariable Long id) {
-		Optional<Dealers> customer1 = dealerRepository.findById(id);
-		if (customer1.isPresent()) {
-			return new ResponseEntity<>(new ResponseData<Dealers>("Dealer Fetched Successfully",
-					HttpStatus.OK.value(), customer1.get(), null), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(
-				new ResponseData<Dealers>("No Dealer Found", HttpStatus.NOT_FOUND.value(), null, null),
-				HttpStatus.NOT_FOUND);
+	public ResponseEntity<ResponseData<DealersResponseDTO>> getDealer(@PathVariable Long id) {
+		DealersResponseDTO dealer = dealersService.getDealer(id);
+		return new ResponseEntity<>(new ResponseData<DealersResponseDTO>("Dealer Fetched Successfully",
+				HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = { "/authenticate" })
-	public ResponseEntity<ResponseData<Dealers>> authenticateCustomer(@Validated @RequestBody Customers customer) {
-		Dealers dealer = dealerRepository.findByEmailAndPassword(customer.getEmail(),customer.getPassword()).orElseThrow(() -> new EntityNotFoundException("Incorrect email and password"));
-		return new ResponseEntity<>(new ResponseData<Dealers>("Stockist Fetched Successfully",
-					HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<DealersResponseDTO>> authenticateCustomer(
+			@Validated @RequestBody Dealers dealers) {
+		DealersResponseDTO dealer = dealersService.findByEmailAndPassword(dealers);
+		return new ResponseEntity<>(new ResponseData<DealersResponseDTO>("Dealer Fetched Successfully",
+				HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
 	}
 
 	@GetMapping
-	public ResponseEntity<ResponseData<List<Dealers>>> getDealersByAttributes(
+	public ResponseEntity<ResponseData<List<DealersResponseDTO>>> getDealersByAttributes(
 			@RequestParam(name = "mobileNo", required = false) String mobileNo,
+			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "status", required = false) UserStatus status) {
 
-		List<Dealers> customers;
-
-		if (mobileNo != null && status != null) {
+		List<Dealers> dealersList;
+		if (mobileNo != null && email != null && status != null) {
+			dealersList = dealerRepository.findByMobileNoAndEmailAndStatus(mobileNo, email, status);
+		} else if (mobileNo != null && email != null) {
+			dealersList = dealerRepository.findByMobileNoAndEmail(mobileNo, email);
+		} else if (mobileNo != null && status != null) {
 			// Fetch dealers by roleName and societyCode
-			customers = dealerRepository.findByMobileNoAndStatus(mobileNo, status);
+			dealersList = dealerRepository.findByMobileNoAndStatus(mobileNo, status);
 		} else if (mobileNo != null) {
 			// Fetch dealers by roleName and relationship
-			customers = dealerRepository.findByMobileNo(mobileNo);
+			dealersList = dealerRepository.findByMobileNo(mobileNo);
 		} else if (status != null) {
 			// Fetch dealers by societyCode and relationship
-			customers = dealerRepository.findByStatus(status);
+			dealersList = dealerRepository.findByStatus(status);
 		} else {
 			// Return all dealers if no params are specified
-			customers = dealerRepository.findAll();
+			dealersList = dealerRepository.findAll();
 		}
 
-		if (customers.isEmpty()) {
-			return new ResponseEntity<>(new ResponseData<List<Dealers>>("No Dealers Found",
-					HttpStatus.NOT_FOUND.value(), customers, null), HttpStatus.NOT_FOUND);
+		if (dealersList.isEmpty()) {
+			return new ResponseEntity<>(
+					new ResponseData<List<DealersResponseDTO>>("No Dealers Found", HttpStatus.NOT_FOUND.value(), null, null),
+					HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new ResponseData<List<Dealers>>("Dealers Fetched Successfully",
-				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
+		return new ResponseEntity<>(
+				new ResponseData<List<DealersResponseDTO>>("Dealers Fetched Successfully", HttpStatus.OK.value(), dealersService.convertToDTOList(dealersList), null),
+				HttpStatus.OK);
 	}
 
 	@PostMapping
 	public ResponseEntity<ResponseData<?>> createDealer(@PathVariable(required = false) Long id,
 			@RequestBody Dealers dealer) {
-		Dealers updatedDealer = dealerRepository.save(dealer);
+		DealersResponseDTO updatedDealer = dealersService.saveDealer(dealer);
 		return new ResponseEntity<>(
 				new ResponseData<>("Dealer Created Successfully", HttpStatus.OK.value(), updatedDealer, null),
 				HttpStatus.OK);
 	}
-	
+
 	@PostMapping(value = { "/many" })
-	public ResponseEntity<Map<ResponseData<Dealers>, String>> createDealers(@RequestBody List<Dealers> customers) {
-		Map<ResponseData<Dealers>, String> responseMap = new HashMap<>();
-		for (Dealers customer : customers) {
+	public ResponseEntity<Map<ResponseData<Users>, String>> createDealers(@RequestBody List<Dealers> dealers) {
+		Map<ResponseData<Users>, String> responseMap = new HashMap<>();
+		for (Dealers dealer : dealers) {
 			try {
-				Dealers newCustomer = dealerRepository.save(customer);
-				responseMap.put(new ResponseData<Dealers>("Dealer Created Successfully", HttpStatus.OK.value(),
-						newCustomer, customer.getDealerId()), "Success");
+				DealersResponseDTO updatedDealer = dealersService.saveDealer(dealer);
+				responseMap.put(new ResponseData<Users>("Dealer Created Successfully", HttpStatus.OK.value(),
+						updatedDealer, dealer.getDealerId()), "Success");
 			} catch (Exception e) {
-				responseMap.put(new ResponseData<Dealers>("Dealer Creation Failed", HttpStatus.OK.value(),
-						customer, customer.getDealerId()), e.getMessage());
+				responseMap.put(new ResponseData<Users>("Dealer Creation Failed", HttpStatus.OK.value(), dealer,
+						dealer.getDealerId()), e.getMessage());
 			}
 		}
 		return new ResponseEntity<>(responseMap, HttpStatus.OK);
 	}
 
 	@PutMapping(value = { "/", "/{id}" })
-	public ResponseEntity<ResponseData<?>> updateDealer(@PathVariable(required = false) Long id,
+	public ResponseEntity<ResponseData<DealersResponseDTO>> updateDealer(@PathVariable(required = false) Long id,
 			@RequestBody Dealers dealer) {
-		Dealers updatedDealer = dealersService.updateDealer(id, dealer);
+		DealersResponseDTO updatedDealer = dealersService.updateDealerAndReturnDTO(id, dealer);
 		return new ResponseEntity<>(
 				new ResponseData<>("Dealer Updated Successfully", HttpStatus.OK.value(), updatedDealer, null),
 				HttpStatus.OK);
