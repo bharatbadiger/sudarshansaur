@@ -104,6 +104,20 @@ public class WarrantyRequestsController {
 				new ResponseData<>("WarrantyRequest Updated Successfully", HttpStatus.OK.value(), updatedWarrantyRequests, null),
 				HttpStatus.OK);
 	}
+	
+	@GetMapping(value = { "customer/{id}" })
+	public ResponseEntity<ResponseData<List<WarrantyRequestsDTO>>> getWarrantyRequestForCustomer(@PathVariable Long id) {
+		List<WarrantyRequestsDTO> warrantyRequests1 = warrantyRequestsService.getAllWarrantyRequestsForCustomer(id);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyRequestsDTO>>("WarrantyRequests Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = { "dealer/{id}" })
+	public ResponseEntity<ResponseData<List<WarrantyRequestsDTO>>> getWarrantyRequestForDealer(@PathVariable Long id) {
+		List<WarrantyRequestsDTO> warrantyRequests1 = warrantyRequestsService.getAllWarrantyRequestsForDealer(id);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyRequestsDTO>>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteWarrantyRequest(@PathVariable("id") Long id) {

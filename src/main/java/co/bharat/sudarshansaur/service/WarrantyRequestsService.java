@@ -80,4 +80,12 @@ public class WarrantyRequestsService {
 		return newWarrantyRequests;
 		
 	}
+	
+    public List<WarrantyRequestsDTO> getAllWarrantyRequestsForCustomer(long customerId) {
+        return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(customerId).orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found")));
+    }
+    
+    public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(long dealerId) {
+        return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(dealerId).orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Dealer Found")));
+    }
 }
