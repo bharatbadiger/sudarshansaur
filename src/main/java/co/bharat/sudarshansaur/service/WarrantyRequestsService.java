@@ -38,9 +38,10 @@ public class WarrantyRequestsService {
 		List<WarrantyRequests> warrantyRequestsList = warrantyRequestsRepository.findAll();
 		return convertToDTOList(warrantyRequestsList);
 	}
-	
+
 	public WarrantyRequestsDTO getWarrantyRequests(Long id) {
-		WarrantyRequests warrantyRequests = warrantyRequestsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyRequest Found"));
+		WarrantyRequests warrantyRequests = warrantyRequestsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequest Found"));
 		return convertToDTO(warrantyRequests);
 	}
 
@@ -51,41 +52,60 @@ public class WarrantyRequestsService {
 	private WarrantyRequestsDTO convertToDTO(WarrantyRequests warrantyRequests) {
 		WarrantyRequestsDTO dto = new WarrantyRequestsDTO();
 		BeanUtils.copyProperties(warrantyRequests, dto);
-		//dto.setCustomers(warrantyRequests.getCustomers());
+		// dto.setCustomers(warrantyRequests.getCustomers());
 		if (warrantyRequests.getInitUserType() != null) {
 			if (UserType.CUSTOMER.equals(warrantyRequests.getInitUserType())) {
-				dto.setInitiatedBy(customersRepository.findById(Long.valueOf(warrantyRequests.getInitiatedBy())).orElseThrow(() -> new EntityNotFoundException("No Customer Found with the given details")));
+				dto.setInitiatedBy(customersRepository.findById(Long.valueOf(warrantyRequests.getInitiatedBy()))
+						.orElseThrow(() -> new EntityNotFoundException("No Customer Found with the given details")));
 			} else if (UserType.DEALER.equals(warrantyRequests.getInitUserType())) {
-				dto.setInitiatedBy(dealersRepository.findById(Long.valueOf(warrantyRequests.getInitiatedBy())).orElseThrow(() -> new EntityNotFoundException("No Dealers Found with the given details")));
+				dto.setInitiatedBy(dealersRepository.findById(Long.valueOf(warrantyRequests.getInitiatedBy()))
+						.orElseThrow(() -> new EntityNotFoundException("No Dealers Found with the given details")));
 			}
 		}
-		
+
 		return dto;
 	}
-	
+
 	@Transactional
 	public WarrantyRequests saveWarrantyRequests(WarrantyRequests warrantyRequests) {
-		if(warrantyRequests.getWarrantyDetails().getWarrantySerialNo() !=null) {
-			warrantyRequests.setWarrantyDetails(warrantyDetailsRepository.findById(warrantyRequests.getWarrantyDetails().getWarrantySerialNo()).orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found")));
+		if (warrantyRequests.getWarrantyDetails().getWarrantySerialNo() != null) {
+			WarrantyDetails existingWarrantyDetail = 
+					warrantyDetailsRepository.findById(warrantyRequests.getWarrantyDetails().getWarrantySerialNo())
+					.orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found"));
+			if(existingWarrantyDetail.getDealers().getDealerId()!=warrantyRequests.getDealers().getDealerId()) {
+				throw new EntityNotFoundException("This Warranty is not allocated to the given Dealer");
+			}
+			warrantyRequests.setWarrantyDetails(existingWarrantyDetail);
 		}
-		if(UserType.CUSTOMER.equals(warrantyRequests.getInitUserType())) {
-			warrantyRequests.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
+		if (UserType.CUSTOMER.equals(warrantyRequests.getInitUserType())) {
+			warrantyRequests.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId())
+					.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
 		}
-		warrantyRequests.setDealers(dealersRepository.findById(warrantyRequests.getDealers().getDealerId()).orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
+		if (UserType.DEALER.equals(warrantyRequests.getInitUserType())) {
+			warrantyRequests.setDealers(dealersRepository.findById(warrantyRequests.getDealers().getDealerId())
+					.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
+			//Add the customer if not present already(customerId will not be present)
+			if(warrantyRequests.getCustomers().getCustomerId()==0) {
+				customersRepository.save(warrantyRequests.getCustomers());
+			}
+		}
 		WarrantyRequests newWarrantyRequests = warrantyRequestsRepository.save(warrantyRequests);
-		if(AllocationStatus.APPROVED.equals(warrantyRequests.getAllocationStatus())) {
+		if (AllocationStatus.APPROVED.equals(warrantyRequests.getAllocationStatus())) {
 			WarrantyDetails updatedWarrantyDetails = warrantyRequests.getWarrantyDetails();
-			warrantyDetailsService.updateWarrantyDetail(updatedWarrantyDetails.getWarrantySerialNo(), updatedWarrantyDetails);
+			warrantyDetailsService.updateWarrantyDetail(updatedWarrantyDetails.getWarrantySerialNo(),
+					updatedWarrantyDetails);
 		}
 		return newWarrantyRequests;
-		
+
 	}
-	
-    public List<WarrantyRequestsDTO> getAllWarrantyRequestsForCustomer(long customerId) {
-        return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(customerId).orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found")));
-    }
-    
-    public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(long dealerId) {
-        return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(dealerId).orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Dealer Found")));
-    }
+
+	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForCustomer(long customerId) {
+		return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(customerId)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found")));
+	}
+
+	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(long dealerId) {
+		return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(dealerId)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Dealer Found")));
+	}
 }

@@ -70,28 +70,6 @@ public class Stockists implements Users {
 
 	private String image;
 
-	/*
-	 * @Embedded
-	 * 
-	 * @AttributeOverrides({
-	 * 
-	 * @AttributeOverride(name = "addressLine1", column = @Column(name =
-	 * "business_addressLine1")),
-	 * 
-	 * @AttributeOverride(name = "addressLine2", column = @Column(name =
-	 * "business_addressLine2")),
-	 * 
-	 * @AttributeOverride(name = "city", column = @Column(name = "business_city")),
-	 * 
-	 * @AttributeOverride(name = "state", column = @Column(name =
-	 * "business_state")),
-	 * 
-	 * @AttributeOverride(name = "country", column = @Column(name =
-	 * "business_country")),
-	 * 
-	 * @AttributeOverride(name = "zipCode", column = @Column(name =
-	 * "business_zipCode")), })
-	 */
 	private String businessAddress;
 
 	private String businessName;
@@ -99,7 +77,7 @@ public class Stockists implements Users {
 	private String gstNumber;
 
 	@OneToMany(mappedBy = "stockists", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference
+	@JsonManagedReference("dealers-stockists")
 	private List<Dealers> dealers;
 
 }

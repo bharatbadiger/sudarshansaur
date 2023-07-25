@@ -2,19 +2,24 @@ package co.bharat.sudarshansaur.entity;
 
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.interfaces.Users;
@@ -39,12 +44,6 @@ public class Dealers implements Users {
 
 	private String password;
 	
-	/*
-	 * @JsonIgnore public String getPassword(){ return password; }
-	 * 
-	 * public void setPassword(String password) { this.password= password; }
-	 */
-
 	@Column(unique = true)
 	private String mobileNo;
 
@@ -73,28 +72,6 @@ public class Dealers implements Users {
 	
 	private String image;
 	
-	/*
-	 * @Embedded
-	 * 
-	 * @AttributeOverrides({
-	 * 
-	 * @AttributeOverride(name = "addressLine1", column = @Column(name =
-	 * "business_addressLine1")),
-	 * 
-	 * @AttributeOverride(name = "addressLine2", column = @Column(name =
-	 * "business_addressLine2")),
-	 * 
-	 * @AttributeOverride(name = "city", column = @Column(name = "business_city")),
-	 * 
-	 * @AttributeOverride(name = "state", column = @Column(name =
-	 * "business_state")),
-	 * 
-	 * @AttributeOverride(name = "country", column = @Column(name =
-	 * "business_country")),
-	 * 
-	 * @AttributeOverride(name = "zipCode", column = @Column(name =
-	 * "business_zipCode")), })
-	 */
 	private String businessAddress;
 	
 	private String businessName;
@@ -103,7 +80,11 @@ public class Dealers implements Users {
 	
 	@ManyToOne
 	@JoinColumn(name="stockist_id")
-	@JsonBackReference
+	@JsonBackReference("dealers-stockists")
 	private Stockists stockists;
+	
+	@OneToMany(mappedBy = "dealers", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference("dealers-warranty")
+	private List<WarrantyDetails> warrantyDetails;
 
 }

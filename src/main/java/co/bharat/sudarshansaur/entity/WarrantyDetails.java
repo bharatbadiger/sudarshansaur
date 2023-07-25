@@ -51,15 +51,18 @@ public class WarrantyDetails {
 	
 	private String subDealer;
 	
-	private String dealers;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "dealer_id")
+    @JsonBackReference("dealers-warranty")
+	private Dealers dealers;
 	
 	private String state;
 	
 	private String description;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    @JsonBackReference("customer-warranty")
 	private Customers customer;
 	
 	//To Add issued date & dealer issued date
