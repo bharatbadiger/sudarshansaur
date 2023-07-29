@@ -166,7 +166,6 @@ public class WarrantyDetailsService {
 		WarrantyDetails warrantyDetail= new WarrantyDetails();
 		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
 		warrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
-		warrantyDetail.setLPD(warrantyDetailsRequests.getLPD());
 		warrantyDetail.setInitUserType(warrantyDetailsRequests.getInitUserType());
 		warrantyDetail.setInitiatedBy(warrantyDetailsRequests.getInitiatedBy());
 		warrantyDetail.setApprovedBy(warrantyDetailsRequests.getApprovedBy());
