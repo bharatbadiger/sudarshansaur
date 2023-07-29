@@ -82,16 +82,17 @@ public class WarrantyDetailsController {
 
 	@PostMapping
 	public ResponseEntity<ResponseData<?>> createWarrantyDetail(@RequestBody WarrantyDetails warrantyDetail) {
-		if (warrantyDetail.getCustomer() != null && warrantyDetail.getCustomer().getCustomerId() > 0) {
-			Optional<Customers> customerDetails = customersRepository
-					.findById(warrantyDetail.getCustomer().getCustomerId());
-			if (customerDetails.isPresent()) {
-				warrantyDetail.setCustomer(customerDetails.get());
-			}
-		}
-		WarrantyDetails updatedUser = warrantyDetailsRepository.save(warrantyDetail);
+		/*
+		 * if (warrantyDetail.getCustomer() != null &&
+		 * warrantyDetail.getCustomer().getCustomerId() > 0) { Optional<Customers>
+		 * customerDetails = customersRepository
+		 * .findById(warrantyDetail.getCustomer().getCustomerId()); if
+		 * (customerDetails.isPresent()) {
+		 * warrantyDetail.setCustomer(customerDetails.get()); } }
+		 */
+		WarrantyDetails createdWarranty = warrantyDetailsService.createWarrantyDetails(warrantyDetail);
 		return new ResponseEntity<>(
-				new ResponseData<>("WarrantyDetail Created Successfully", HttpStatus.OK.value(), updatedUser, null),
+				new ResponseData<>("WarrantyDetail Created Successfully", HttpStatus.OK.value(), createdWarranty, null),
 				HttpStatus.OK);
 	}
 

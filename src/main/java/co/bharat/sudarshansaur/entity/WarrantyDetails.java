@@ -8,11 +8,14 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import co.bharat.sudarshansaur.enums.AllocationStatus;
+import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,48 +31,79 @@ public class WarrantyDetails {
 	
 	@Id
 	private String warrantySerialNo;
-
-	private String invoiceNo;
+	
+	private String crmCustomerName;	
+	
+	private String crmCustomerMobileNo;
 
 	private String itemDescription;
-	
-	private String model;
 	
 	private String LPD;
 
 	private Date installationDate;
 	
-	private String guranteePeriod;
+	private String model;
 	
-	private Date validTill;
+	private String guaranteeStatus;
 	
-	private Date custBillDate;
+	private String guaranteePeriod;
 	
-	private AllocationStatus allocationStatus;
+	private String assignedTo;	
+	
+	private Date custBillDate;	
 	
 	private String billNo;
+
+	private String invoiceNo;
 	
-	private String subDealer;
+	private String crmDealerName;
 	
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dealer_id")
-    @JsonBackReference("dealers-warranty")
-	private Dealers dealers;
+	private String crmStockistName;
+	
+	private String crmStockistMobileNo;
+	
+	private String crmStockistEmail;
 	
 	private String state;
 	
 	private String description;
 	
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "stockist_id")
+	private Stockists stockists;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "dealer_id")
+    @JsonBackReference("dealers-warranty")
+	private Dealers dealers;
+	
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
     @JsonBackReference("customer-warranty")
 	private Customers customer;
-	
-	//To Add issued date & dealer issued date
-	
-	//Unassign warranty only when no customer is assigned
-	//System
-	
-	
+    
+    private AllocationStatus allocationStatus;
+    
+    private Date createdOn;
 
+	@PrePersist
+	protected void onCreate() {
+		createdOn = new Date();
+		updatedOn = createdOn;
+		approvedBy = initiatedBy;
+	}
+
+	private Date updatedOn;
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedOn = new Date();
+	}
+	
+	private UserType initUserType;
+	
+	private String initiatedBy;
+
+	private String approvedBy;
+	
 }

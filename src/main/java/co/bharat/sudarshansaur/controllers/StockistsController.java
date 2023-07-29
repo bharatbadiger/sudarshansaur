@@ -1,5 +1,6 @@
 package co.bharat.sudarshansaur.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,16 +58,16 @@ public class StockistsController {
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "status", required = false) UserStatus status) {
 
-		List<Stockists> stockistsList;
+		List<Stockists> stockistsList = new ArrayList<>();;
 
 		if (mobileNo != null && email != null && status != null) {
-			stockistsList = stockistRepository.findByMobileNoAndEmailAndStatus(mobileNo, email, status);
+			stockistsList.add(stockistRepository.findByMobileNoAndEmailAndStatus(mobileNo, email, status));
 		} else if (mobileNo != null && email != null) {
-			stockistsList = stockistRepository.findByMobileNoAndEmail(mobileNo, email);
+			stockistsList.add(stockistRepository.findByMobileNoAndEmail(mobileNo, email));
 		} else if (mobileNo != null && status != null) {
-			stockistsList = stockistRepository.findByMobileNoAndStatus(mobileNo, status);
+			stockistsList.add(stockistRepository.findByMobileNoAndStatus(mobileNo, status));
 		} else if (mobileNo != null) {
-			stockistsList = stockistRepository.findByMobileNo(mobileNo);
+			stockistsList.add(stockistRepository.findByMobileNo(mobileNo));
 		} else if (status != null) {
 			stockistsList = stockistRepository.findByStatus(status);
 		} else {

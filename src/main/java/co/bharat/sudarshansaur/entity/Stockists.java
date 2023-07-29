@@ -75,7 +75,7 @@ public class Stockists implements Users {
 	private String businessName;
 
 	private String gstNumber;
-
+	
 	@OneToMany(mappedBy = "stockists", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonManagedReference("dealers-stockists")
 	private List<Dealers> dealers;
