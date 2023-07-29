@@ -101,7 +101,8 @@ public class WarrantyDetailsService {
 	public WarrantyDetails createWarrantyDetails(WarrantyDetails warrantyDetailsRequests) {
 		WarrantyDetails parsedWarrantyDetail = new WarrantyDetails();
 		if (warrantyDetailsRequests.getWarrantySerialNo() != null) {
-			parsedWarrantyDetail= validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests.getWarrantySerialNo());
+			parsedWarrantyDetail= validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
+			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
 			Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
 			if(stockist == null) {
 				Stockists newStockist = stockistsRepository.save(Stockists.builder()
@@ -138,12 +139,12 @@ public class WarrantyDetailsService {
 
 	}
 	
-	public WarrantyDetails validateAndGetWarrantyDetailsFromCRM(String warrantySerialNo) {
+	public WarrantyDetails validateAndGetWarrantyDetailsFromCRM(WarrantyDetails warrantyDetailsRequests) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); 
 		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		formData.add("serial_no", warrantySerialNo);
+		formData.add("serial_no", warrantyDetailsRequests.getWarrantySerialNo());
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
 		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
 		try {
@@ -164,6 +165,11 @@ public class WarrantyDetailsService {
 		}
 		WarrantyDetails warrantyDetail= new WarrantyDetails();
 		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
+		warrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
+		warrantyDetail.setLPD(warrantyDetailsRequests.getLPD());
+		warrantyDetail.setInitUserType(warrantyDetailsRequests.getInitUserType());
+		warrantyDetail.setInitiatedBy(warrantyDetailsRequests.getInitiatedBy());
+		warrantyDetail.setApprovedBy(warrantyDetailsRequests.getApprovedBy());
 		return warrantyDetail;
 	}
 	
