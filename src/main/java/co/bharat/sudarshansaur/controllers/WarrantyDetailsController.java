@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
-import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
@@ -40,9 +41,9 @@ public class WarrantyDetailsController {
 	private CustomersRepository customersRepository;
 
 	@GetMapping(value = { "/{id}" })
-	public ResponseEntity<ResponseData<WarrantyDetailsDTO>> getWarrantyDetail(@PathVariable String id) {
-		WarrantyDetailsDTO warrantyDetails1 = warrantyDetailsService.getWarrantyDetails(id);
-		return new ResponseEntity<>(new ResponseData<WarrantyDetailsDTO>("WarrantyDetail Fetched Successfully",
+	public ResponseEntity<ResponseData<WarrantyDetails>> getWarrantyDetail(@PathVariable String id) {
+		WarrantyDetails warrantyDetails1 = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found"));
+		return new ResponseEntity<>(new ResponseData<WarrantyDetails>("WarrantyDetail Fetched Successfully",
 				HttpStatus.OK.value(), warrantyDetails1, null), HttpStatus.OK);
 	}
 
