@@ -2,6 +2,7 @@ package co.bharat.sudarshansaur.exception.handler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
@@ -16,7 +17,7 @@ import co.bharat.sudarshansaur.dto.ResponseData;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-    @ExceptionHandler({ConstraintViolationException.class, DataIntegrityViolationException.class,SQLIntegrityConstraintViolationException.class})
+    @ExceptionHandler({EntityExistsException.class,ConstraintViolationException.class, DataIntegrityViolationException.class,SQLIntegrityConstraintViolationException.class})
     public ResponseEntity<ResponseData<String>> handleConstraintViolationException(RuntimeException ex) {
     	ResponseData<String> responseData = ResponseData.<String>builder()
 				.statusCode(HttpStatus.CONFLICT.value()).message(ex.getLocalizedMessage()).data(null).build();
@@ -29,6 +30,15 @@ public class GlobalExceptionHandler {
 				.statusCode(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).data(null).build();
 		return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
     }
+	
+	/*
+	 * @ExceptionHandler(EntityExistsException.class) public
+	 * ResponseEntity<ResponseData<String>>
+	 * handleEntityExistsException(EntityExistsException ex) { ResponseData<String>
+	 * responseData = ResponseData.<String>builder()
+	 * .statusCode(HttpStatus.CONFLICT.value()).message(ex.getMessage()).data(null).
+	 * build(); return new ResponseEntity<>(responseData, HttpStatus.CONFLICT); }
+	 */
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseData<String>> handleException(Exception ex) {

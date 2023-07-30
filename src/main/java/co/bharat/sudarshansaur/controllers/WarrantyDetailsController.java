@@ -44,11 +44,6 @@ public class WarrantyDetailsController {
 		WarrantyDetailsDTO warrantyDetails1 = warrantyDetailsService.getWarrantyDetails(id);
 		return new ResponseEntity<>(new ResponseData<WarrantyDetailsDTO>("WarrantyDetail Fetched Successfully",
 				HttpStatus.OK.value(), warrantyDetails1, null), HttpStatus.OK);
-		/*
-		 * return new ResponseEntity<>( new
-		 * ResponseData<WarrantyDetails>("No WarrantyDetail Found",
-		 * HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
-		 */
 	}
 
 	@GetMapping
@@ -79,17 +74,23 @@ public class WarrantyDetailsController {
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
 				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
 	}
+	
+	@GetMapping(value = { "customer/{id}" })
+	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForCustomer(@PathVariable Long id) {
+		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByCustomerCustomerId(id);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = { "dealer/{id}" })
+	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForDealer(@PathVariable Long id) {
+		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByDealersDealerId(id);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+	}
 
 	@PostMapping
 	public ResponseEntity<ResponseData<?>> createWarrantyDetail(@RequestBody WarrantyDetails warrantyDetail) {
-		/*
-		 * if (warrantyDetail.getCustomer() != null &&
-		 * warrantyDetail.getCustomer().getCustomerId() > 0) { Optional<Customers>
-		 * customerDetails = customersRepository
-		 * .findById(warrantyDetail.getCustomer().getCustomerId()); if
-		 * (customerDetails.isPresent()) {
-		 * warrantyDetail.setCustomer(customerDetails.get()); } }
-		 */
 		WarrantyDetails createdWarranty = warrantyDetailsService.createWarrantyDetails(warrantyDetail);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyDetail Created Successfully", HttpStatus.OK.value(), createdWarranty, null),
@@ -116,12 +117,6 @@ public class WarrantyDetailsController {
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateWarrantyDetail(@PathVariable(required = false) String id,
 			@RequestBody WarrantyDetails warrantyDetail) {
-		Optional<WarrantyDetails> existingUser = warrantyDetailsRepository.findById(id);
-		if (!existingUser.isPresent()) {
-			return new ResponseEntity<>(new ResponseData<WarrantyDetails>("WarrantyDetail Not Found",
-					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
-
-		}
 		if (warrantyDetail.getCustomer() != null && warrantyDetail.getCustomer().getCustomerId() > 0) {
 			Optional<Customers> customerDetails = customersRepository
 					.findById(warrantyDetail.getCustomer().getCustomerId());
@@ -129,7 +124,7 @@ public class WarrantyDetailsController {
 				warrantyDetail.setCustomer(customerDetails.get());
 			}
 		}
-		WarrantyDetails updatedWarrantyDetails = warrantyDetailsRepository.save(warrantyDetail);
+		WarrantyDetails updatedWarrantyDetails = warrantyDetailsService.updateWarrantyDetail(id, warrantyDetail);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyDetail Updated Successfully", HttpStatus.OK.value(), updatedWarrantyDetails, null),
 				HttpStatus.OK);

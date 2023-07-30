@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
@@ -34,6 +35,7 @@ import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
+import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
@@ -79,7 +81,7 @@ public class WarrantyDetailsService {
 	
 	//Updates ONLY the properties which are passed in the request data
 	public WarrantyDetails updateWarrantyDetail(String id, WarrantyDetails updatedWarrantyDetail) {
-		WarrantyDetails existingWarrantyDetail = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetail Found"));
+		WarrantyDetails existingWarrantyDetail = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found"));
 		BeanUtils.copyProperties(updatedWarrantyDetail, existingWarrantyDetail, getNullPropertyNames(updatedWarrantyDetail));
 		return warrantyDetailsRepository.save(existingWarrantyDetail);
 	}
@@ -101,6 +103,7 @@ public class WarrantyDetailsService {
 	public WarrantyDetails createWarrantyDetails(WarrantyDetails warrantyDetailsRequests) {
 		WarrantyDetails parsedWarrantyDetail = new WarrantyDetails();
 		if (warrantyDetailsRequests.getWarrantySerialNo() != null) {
+			warrantyDetailsRepository.findByWarrantySerialNo(warrantyDetailsRequests.getWarrantySerialNo()).ifPresent(existingWarrantyDetail ->{throw new EntityExistsException("This warranty serial no already exists!");});
 			parsedWarrantyDetail= validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
 			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
 			Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
@@ -110,6 +113,7 @@ public class WarrantyDetailsService {
 						.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
 						.stockistName(parsedWarrantyDetail.getCrmStockistName())
 						.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
+						.status(UserStatus.CREATED)
 						.build());
 				parsedWarrantyDetail.setStockists(newStockist);
 				
