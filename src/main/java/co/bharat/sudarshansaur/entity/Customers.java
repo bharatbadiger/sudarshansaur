@@ -75,9 +75,14 @@ public class Customers implements Users{
 	// @OneToMany(mappedBy = "customers", cascade = CascadeType.ALL, orphanRemoval =
 	// true)
 
-	//@OneToMany(mappedBy = "customers")
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference("customer-warranty")
-	private List<WarrantyDetails> warrantyDetails;
+	/*
+	 * //@OneToMany(mappedBy = "customers")
+	 * 
+	 * @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch =
+	 * FetchType.LAZY)
+	 * 
+	 * @JsonManagedReference("customer-warranty") private List<WarrantyDetails>
+	 * warrantyDetails;
+	 */
 
 }

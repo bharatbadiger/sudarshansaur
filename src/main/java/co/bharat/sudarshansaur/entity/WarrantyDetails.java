@@ -79,7 +79,7 @@ public class WarrantyDetails {
 	
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
-    @JsonBackReference("customer-warranty")
+    //@JsonBackReference("customer-warranty")
 	private Customers customer;
     
     private AllocationStatus allocationStatus;
