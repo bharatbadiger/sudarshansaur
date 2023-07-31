@@ -1,5 +1,7 @@
 package co.bharat.sudarshansaur.controllers;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,7 @@ public class AdminController {
 
 	@GetMapping(value = { "/{mobileNo}" })
 	public ResponseEntity<ResponseData<Admin>> getAdmin(@PathVariable String mobileNo) {
-		Admin admin = adminRepository.getById(mobileNo);
+		Admin admin = adminRepository.findById(mobileNo).orElseThrow(() -> new EntityNotFoundException("Admin Not Found"));
 		return new ResponseEntity<>(new ResponseData<Admin>("Admin Fetched Successfully",
 				HttpStatus.OK.value(), admin, null), HttpStatus.OK);
 	}
