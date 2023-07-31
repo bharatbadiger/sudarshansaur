@@ -24,12 +24,7 @@ public interface CustomersRepository extends JpaRepository<Customers,Long>{
 	
 	Optional<Customers> findByEmailAndPassword(String email,String password);
 	
-    @Query("SELECT \"dealers\", d.status, COUNT(1) FROM icrmdev_sudarshansaur.dealers d GROUP BY d.status\r\n" + 
-    		"UNION\r\n" + 
-    		"SELECT \"stockists\", s.status, COUNT(1) FROM icrmdev_sudarshansaur.stockists s GROUP BY s.status\r\n" + 
-    		"UNION\r\n" + 
-    		"SELECT \"warrantyDetails\", w.allocation_status as status, COUNT(1) FROM icrmdev_sudarshansaur.warranty_details w GROUP BY w.allocation_status;\r\n" + 
-    		"")
+    @Query("SELECT c.status, COUNT(1) FROM Customers c GROUP BY c.status")
     List<Object[]> countCustomersByStatus();
 
 }
