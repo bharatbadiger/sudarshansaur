@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.enums.UserStatus;
@@ -22,5 +23,8 @@ public interface CustomersRepository extends JpaRepository<Customers,Long>{
 	List<Customers> findByStatus(UserStatus status);
 	
 	Optional<Customers> findByEmailAndPassword(String email,String password);
+	
+    @Query("SELECT c.status, COUNT(1) FROM Customers c GROUP BY c.status")
+    List<Object[]> countCustomersByStatus();
 
 }

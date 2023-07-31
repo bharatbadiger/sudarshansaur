@@ -35,6 +35,10 @@ public class CustomersService {
 		Customers newCustomer = customersRepository.save(customer);
 		return convertToDTO(newCustomer);
 	}
+	
+    public List<Object[]> getCountOfCustomersByStatus() {
+        return customersRepository.countCustomersByStatus();
+    }
 
 	//Updates ONLY the properties which are passed in the request data
 	public Customers updateCustomer(Long id, Customers updatedCustomer) {

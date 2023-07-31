@@ -43,6 +43,13 @@ public class CustomersController {
 		return new ResponseEntity<>(new ResponseData<CustomersResponseDTO>("Customer Fetched Successfully",
 				HttpStatus.OK.value(), customer, null), HttpStatus.OK);
 	}
+	
+	@GetMapping(value = { "/count" })
+	public ResponseEntity<ResponseData<List<Object[]>>> getCustomersCount() {
+		List<Object[]> customer = customersService.getCountOfCustomersByStatus();
+		return new ResponseEntity<>(new ResponseData<List<Object[]>>("Customer Count Fetched Successfully",
+				HttpStatus.OK.value(), customer, null), HttpStatus.OK);
+	}
 
 	@PostMapping(value = { "/authenticate" })
 	public ResponseEntity<ResponseData<CustomersResponseDTO>> authenticateCustomer(@Validated @RequestBody Customers customers) {
