@@ -4,6 +4,8 @@ package co.bharat.sudarshansaur.entity;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -82,6 +84,7 @@ public class WarrantyDetails {
     //@JsonBackReference("customer-warranty")
 	private Customers customer;
     
+    @Enumerated(EnumType.STRING)
     private AllocationStatus allocationStatus;
     
     private Date createdOn;
@@ -100,6 +103,7 @@ public class WarrantyDetails {
 		updatedOn = new Date();
 	}
 	
+	@Enumerated(EnumType.STRING)
 	private UserType initUserType;
 	
 	private String initiatedBy;

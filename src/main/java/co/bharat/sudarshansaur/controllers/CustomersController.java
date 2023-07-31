@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.CustomersResponseDTO;
 import co.bharat.sudarshansaur.dto.ResponseData;
+import co.bharat.sudarshansaur.dto.StatusCountDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.interfaces.Users;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.service.CustomersService;
+import co.bharat.sudarshansaur.service.StatusCountService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -36,6 +38,9 @@ public class CustomersController {
 
 	@Autowired
 	private CustomersService customersService;
+	
+	@Autowired
+	private StatusCountService statusCountService;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<CustomersResponseDTO>> getCustomer(@PathVariable Long id) {
@@ -45,9 +50,9 @@ public class CustomersController {
 	}
 	
 	@GetMapping(value = { "/count" })
-	public ResponseEntity<ResponseData<List<Object[]>>> getCustomersCount() {
-		List<Object[]> customer = customersService.getCountOfCustomersByStatus();
-		return new ResponseEntity<>(new ResponseData<List<Object[]>>("Customer Count Fetched Successfully",
+	public ResponseEntity<ResponseData<List<StatusCountDTO>>> getCustomersCount() {
+		List<StatusCountDTO> customer = statusCountService.getStatusCounts();
+		return new ResponseEntity<>(new ResponseData<List<StatusCountDTO>>("Customer Count Fetched Successfully",
 				HttpStatus.OK.value(), customer, null), HttpStatus.OK);
 	}
 
