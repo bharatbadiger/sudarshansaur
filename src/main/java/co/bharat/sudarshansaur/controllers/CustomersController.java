@@ -50,10 +50,10 @@ public class CustomersController {
 	}
 	
 	@GetMapping(value = { "/count" })
-	public ResponseEntity<ResponseData<List<StatusCountDTO>>> getCustomersCount() {
-		List<StatusCountDTO> customer = statusCountService.getStatusCounts();
-		return new ResponseEntity<>(new ResponseData<List<StatusCountDTO>>("Customer Count Fetched Successfully",
-				HttpStatus.OK.value(), customer, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<StatusCountDTO>> getAllcounts() {
+		StatusCountDTO statusCounts = statusCountService.getMergedStatusCounts();
+		return new ResponseEntity<>(new ResponseData<StatusCountDTO>("Counts Fetched Successfully",
+				HttpStatus.OK.value(), statusCounts, null), HttpStatus.OK);
 	}
 
 	@PostMapping(value = { "/authenticate" })

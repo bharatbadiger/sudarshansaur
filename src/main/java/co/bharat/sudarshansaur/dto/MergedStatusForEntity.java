@@ -1,6 +1,6 @@
 package co.bharat.sudarshansaur.dto;
 
-import java.util.Map;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StatusCountDTO {
+public class MergedStatusForEntity {
 
-	private Map<String, MergedStatusForEntity> data;
+	private List<MergedStatus> statuses;
 
 }
