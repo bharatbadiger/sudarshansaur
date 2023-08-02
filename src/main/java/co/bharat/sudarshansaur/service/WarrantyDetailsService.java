@@ -35,6 +35,7 @@ import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
+import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
@@ -103,7 +104,11 @@ public class WarrantyDetailsService {
 	public WarrantyDetails createWarrantyDetails(WarrantyDetails warrantyDetailsRequests) {
 		WarrantyDetails parsedWarrantyDetail = new WarrantyDetails();
 		if (warrantyDetailsRequests.getWarrantySerialNo() != null) {
-			warrantyDetailsRepository.findByWarrantySerialNo(warrantyDetailsRequests.getWarrantySerialNo()).ifPresent(existingWarrantyDetail ->{throw new EntityExistsException("This warranty serial no already exists!");});
+			warrantyDetailsRepository.findByWarrantySerialNo(warrantyDetailsRequests.getWarrantySerialNo()).ifPresent(existingWarrantyDetail ->{
+				if(!AllocationStatus.DECLINED.equals(existingWarrantyDetail.getAllocationStatus())) {
+					throw new EntityExistsException("This warranty serial no already exists!");
+				}
+			});
 			parsedWarrantyDetail= validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
 			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
 			Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());

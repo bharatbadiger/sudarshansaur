@@ -35,7 +35,6 @@ import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.repository.StockistsRepository;
-import co.bharat.sudarshansaur.repository.WarrantyDetailsRepository;
 import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
 
 @Service
@@ -43,8 +42,6 @@ public class WarrantyRequestsService {
 
 	@Autowired
 	private WarrantyDetailsService warrantyDetailsService;
-	@Autowired
-	private WarrantyDetailsRepository warrantyDetailsRepository;
 	@Autowired
 	private WarrantyRequestsRepository warrantyRequestsRepository;
 	@Autowired
