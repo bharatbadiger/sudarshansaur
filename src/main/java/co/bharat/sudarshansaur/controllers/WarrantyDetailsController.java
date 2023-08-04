@@ -124,10 +124,15 @@ public class WarrantyDetailsController {
 	}
 	
 	@GetMapping(value = { "stockist/crm/{mobileNo}" })
-	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyDetailsForStockistMobileNoFromCRM(@PathVariable String mobileNo) {
+	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyDetailsForStockistMobileNoFromCRM(@RequestParam(defaultValue = "1", name = "pageNumber", required = false) int pageNumber,
+	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
 		List<WarrantyDetailsDTO> externalWarrantyDetails = warrantyDetailsService.findWarrantyDetailsByMobileNoFromCRM(mobileNo);
+		int totalResults =externalWarrantyDetails.size();
+		int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+		int startIndex = Math.abs((pageNumber - 1) * pageSize);
+		int endIndex = Math.min(startIndex + pageSize, totalResults);
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), externalWarrantyDetails, externalWarrantyDetails.size()), HttpStatus.OK);
+				HttpStatus.OK.value(), externalWarrantyDetails.subList(startIndex, endIndex), externalWarrantyDetails.size()), HttpStatus.OK);
 	}
 	
 	@PostMapping
