@@ -94,7 +94,7 @@ public class WarrantyDetailsController {
 				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = { "stockist/{id}" })
+	@GetMapping(value = { "stockist/{mobileNo}" })
 	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
 	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
 		Sort sort = Sort.by("warrantySerialNo").descending();
