@@ -210,7 +210,7 @@ public class WarrantyDetailsService {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		formData.add("mobileNo", mobileNo);
+		formData.add("mobile_no", mobileNo);
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
 		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
 		try {

@@ -1,10 +1,10 @@
 package co.bharat.sudarshansaur.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -138,21 +138,21 @@ public class WarrantyDetailsController {
 				HttpStatus.OK);
 	}
 
-	@PostMapping(value = { "/many" })
-	public ResponseEntity<Map<ResponseData<WarrantyDetails>, String>> createWarrantyDetails(
+	@PostMapping(value = { "/all" })
+	public ResponseEntity<List<ResponseData<WarrantyDetails>>> createWarrantyDetails(
 			@RequestBody List<WarrantyDetails> warrantyDetails) {
-		Map<ResponseData<WarrantyDetails>, String> responseMap = new HashMap<>();
+		List<ResponseData<WarrantyDetails>> responseList = new ArrayList<>();
 		for (WarrantyDetails warrantyDetail : warrantyDetails) {
 			try {
-				WarrantyDetails newStockist = warrantyDetailsRepository.save(warrantyDetail);
-				responseMap.put(new ResponseData<WarrantyDetails>("WarrantyDetail Created Successfully",
-						HttpStatus.OK.value(), newStockist, warrantyDetail.getWarrantySerialNo()), "Success");
+				WarrantyDetails newStockist = warrantyDetailsService.createWarrantyDetails(warrantyDetail);
+				responseList.add(new ResponseData<WarrantyDetails>("WarrantyDetail Created Successfully",
+						HttpStatus.OK.value(), newStockist, "Success"));
 			} catch (Exception e) {
-				responseMap.put(new ResponseData<WarrantyDetails>("WarrantyDetail Creation Failed",
-						HttpStatus.OK.value(), warrantyDetail, warrantyDetail.getWarrantySerialNo()), e.getMessage());
+				responseList.add(new ResponseData<WarrantyDetails>("WarrantyDetail Creation Failed",
+						HttpStatus.OK.value(), warrantyDetail, e.getMessage()));
 			}
 		}
-		return new ResponseEntity<>(responseMap, HttpStatus.OK);
+		return new ResponseEntity<>(responseList, HttpStatus.OK);
 	}
 
 	@PutMapping(value = { "/", "/{id}" })
