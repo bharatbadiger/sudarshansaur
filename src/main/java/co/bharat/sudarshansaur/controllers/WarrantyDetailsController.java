@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
+import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
@@ -82,19 +85,29 @@ public class WarrantyDetailsController {
 	
 	@GetMapping(value = { "customer/{id}" })
 	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForCustomer(@PathVariable Long id) {
-		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByCustomerCustomerId(id);
+		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByCustomerCustomerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = { "dealer/{id}" })
 	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForDealer(@PathVariable Long id) {
-		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByDealersDealerId(id);
+		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByDealersDealerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = { "stockist/{mobileNo}" })
+	@GetMapping(value = { "stockist/{id}" })
+	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForStockist(@PathVariable Long id) {
+		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByStockistsStockistId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = { "stockist/mobileNo/{mobileNo}" })
 	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
 	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
 		Sort sort = Sort.by("warrantySerialNo").descending();
@@ -108,6 +121,13 @@ public class WarrantyDetailsController {
 	    response.put("totalPages", pageResult.getTotalPages());
 		return new ResponseEntity<>(new ResponseData<>("WarrantyDetails Fetched Successfully",
 				HttpStatus.OK.value(), response, null), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = { "stockist/crm/{mobileNo}" })
+	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyDetailsForStockistMobileNoFromCRM(@PathVariable String mobileNo) {
+		List<WarrantyDetailsDTO> externalWarrantyDetails = warrantyDetailsService.findWarrantyDetailsByMobileNoFromCRM(mobileNo);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), externalWarrantyDetails, externalWarrantyDetails.size()), HttpStatus.OK);
 	}
 	
 	@PostMapping

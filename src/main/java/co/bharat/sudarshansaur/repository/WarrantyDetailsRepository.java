@@ -20,10 +20,12 @@ public interface WarrantyDetailsRepository extends JpaRepository<WarrantyDetails
 
 	Optional<WarrantyDetails> findByWarrantySerialNo(String warrantySerialNo);
 
-	List<WarrantyDetails> findByCustomerCustomerId(Long id);
+	Optional<List<WarrantyDetails>> findByCustomerCustomerId(Long id);
 
-	List<WarrantyDetails> findByDealersDealerId(Long id);
+	Optional<List<WarrantyDetails>> findByDealersDealerId(Long id);
 	
 	Page<WarrantyDetails> findByStockistsMobileNo(String mobileNo, Pageable pageable);
+	
+	Optional<List<WarrantyDetails>> findByStockistsStockistId(Long id);
 
 }

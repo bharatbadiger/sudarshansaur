@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityExistsException;
@@ -58,14 +59,17 @@ public class WarrantyDetailsService {
 	RestTemplate restTemplate;
 	@Value("${crm.validation.url}")
 	private String crmUrl;
+	@Value("${crm.warranty.list.mobileno.url}")
+	private String crmMobileNoUrl;
 
 	public List<WarrantyDetailsDTO> getAllWarrantyDetails() {
 		List<WarrantyDetails> warrantyDetailsList = warrantyDetailsRepository.findAll();
 		return convertToDTOList(warrantyDetailsList);
 	}
-	
+
 	public WarrantyDetailsDTO getWarrantyDetails(String id) {
-		WarrantyDetails warrantyDetails = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetail Found"));
+		WarrantyDetails warrantyDetails = warrantyDetailsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyDetail Found"));
 		return convertToDTO(warrantyDetails);
 	}
 
@@ -79,100 +83,115 @@ public class WarrantyDetailsService {
 		dto.setCustomer(warrantyDetails.getCustomer().getCustomerId());
 		return dto;
 	}
-	
-	//Updates ONLY the properties which are passed in the request data
+
+	private List<WarrantyDetailsDTO> convertToDTOListExternal(List<ExternalWarrantyDetailsDTO> warrantyDetailsList) {
+		return warrantyDetailsList.stream().map(this::convertToDTOExternal).collect(Collectors.toList());
+	}
+
+	private WarrantyDetailsDTO convertToDTOExternal(ExternalWarrantyDetailsDTO warrantyDetails) {
+		WarrantyDetailsDTO dto = new WarrantyDetailsDTO();
+		BeanUtils.copyProperties(warrantyDetails, dto);
+		return dto;
+	}
+
+	// Updates ONLY the properties which are passed in the request data
 	public WarrantyDetails updateWarrantyDetail(String id, WarrantyDetails updatedWarrantyDetail) {
-		WarrantyDetails existingWarrantyDetail = warrantyDetailsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found"));
-		BeanUtils.copyProperties(updatedWarrantyDetail, existingWarrantyDetail, getNullPropertyNames(updatedWarrantyDetail));
+		WarrantyDetails existingWarrantyDetail = warrantyDetailsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("No Warranty Detail Found"));
+		BeanUtils.copyProperties(updatedWarrantyDetail, existingWarrantyDetail,
+				getNullPropertyNames(updatedWarrantyDetail));
 		return warrantyDetailsRepository.save(existingWarrantyDetail);
 	}
-	
-	//Find the properties which are not present in the request
-    private String[] getNullPropertyNames(WarrantyDetails warrantyDetail) {
-        BeanWrapper beanWrapper = new BeanWrapperImpl(warrantyDetail);
-        List<String> nullPropertyNames = new ArrayList<>();
-        for (PropertyDescriptor propertyDescriptor : beanWrapper.getPropertyDescriptors()) {
-            String propertyName = propertyDescriptor.getName();
-            if (beanWrapper.getPropertyValue(propertyName) == null) {
-                nullPropertyNames.add(propertyName);
-            }
-        }
-        return nullPropertyNames.toArray(new String[0]);
-    }
-    
+
+	// Find the properties which are not present in the request
+	private String[] getNullPropertyNames(WarrantyDetails warrantyDetail) {
+		BeanWrapper beanWrapper = new BeanWrapperImpl(warrantyDetail);
+		List<String> nullPropertyNames = new ArrayList<>();
+		for (PropertyDescriptor propertyDescriptor : beanWrapper.getPropertyDescriptors()) {
+			String propertyName = propertyDescriptor.getName();
+			if (beanWrapper.getPropertyValue(propertyName) == null) {
+				nullPropertyNames.add(propertyName);
+			}
+		}
+		return nullPropertyNames.toArray(new String[0]);
+	}
+
 	@Transactional
 	public WarrantyDetails createWarrantyDetails(WarrantyDetails warrantyDetailsRequests) {
 		WarrantyDetails parsedWarrantyDetail = new WarrantyDetails();
 		if (warrantyDetailsRequests.getWarrantySerialNo() != null) {
-			warrantyDetailsRepository.findByWarrantySerialNo(warrantyDetailsRequests.getWarrantySerialNo()).ifPresent(existingWarrantyDetail ->{
-				if(!AllocationStatus.DECLINED.equals(existingWarrantyDetail.getAllocationStatus())) {
-					throw new EntityExistsException("This warranty serial no already exists!");
-				}
-			});
-			parsedWarrantyDetail= validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
+			warrantyDetailsRepository.findByWarrantySerialNo(warrantyDetailsRequests.getWarrantySerialNo())
+					.ifPresent(existingWarrantyDetail -> {
+						if (!AllocationStatus.DECLINED.equals(existingWarrantyDetail.getAllocationStatus())) {
+							throw new EntityExistsException("This warranty serial no already exists!");
+						}
+					});
+			parsedWarrantyDetail = validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
 			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
 			Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
-			if(stockist == null) {
-				Stockists newStockist = stockistsRepository.save(Stockists.builder()
-						.email(parsedWarrantyDetail.getCrmStockistEmail())
-						.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
-						.stockistName(parsedWarrantyDetail.getCrmStockistName())
-						.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
-						.status(UserStatus.CREATED)
-						.build());
+			if (stockist == null) {
+				Stockists newStockist = stockistsRepository
+						.save(Stockists.builder().email(parsedWarrantyDetail.getCrmStockistEmail())
+								.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
+								.stockistName(parsedWarrantyDetail.getCrmStockistName())
+								.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
+								.status(UserStatus.CREATED).build());
 				parsedWarrantyDetail.setStockists(newStockist);
-				
+
 			} else {
 				parsedWarrantyDetail.setStockists(stockist);
 			}
 		}
 		if (UserType.CUSTOMER.equals(warrantyDetailsRequests.getInitUserType())) {
-			parsedWarrantyDetail.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
-					.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
+			parsedWarrantyDetail
+					.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
+							.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
 		}
 		if (UserType.DEALER.equals(warrantyDetailsRequests.getInitUserType())) {
-			parsedWarrantyDetail.setDealers(dealersRepository.findById(warrantyDetailsRequests.getDealers().getDealerId())
-					.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
-			//Add the customer if not present already(customerId will not be present)
-			if(warrantyDetailsRequests.getCustomer().getCustomerId()==0) {
-				warrantyDetailsRequests.getCustomer().setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
+			parsedWarrantyDetail
+					.setDealers(dealersRepository.findById(warrantyDetailsRequests.getDealers().getDealerId())
+							.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
+			// Add the customer if not present already(customerId will not be present)
+			if (warrantyDetailsRequests.getCustomer().getCustomerId() == 0) {
+				warrantyDetailsRequests.getCustomer()
+						.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
 				Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
 				parsedWarrantyDetail.setCustomer(newCustomer);
 			} else {
-				parsedWarrantyDetail.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
-						.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
+				parsedWarrantyDetail
+						.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
+								.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
 			}
 		}
 		WarrantyDetails newWarrantyDetails = warrantyDetailsRepository.save(parsedWarrantyDetail);
 		return newWarrantyDetails;
 
 	}
-	
+
 	public WarrantyDetails validateAndGetWarrantyDetailsFromCRM(WarrantyDetails warrantyDetailsRequests) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); 
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("serial_no", warrantyDetailsRequests.getWarrantySerialNo());
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
 		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
 		try {
-		ResponseEntity<String> response = restTemplate.postForEntity(crmUrl, requestEntity,String.class);
-		String jsonResponse = response.getBody();
-		ObjectMapper objectMapper = new ObjectMapper();
-		//externalWarrantyDetailsDTO = objectMapper.readValue(jsonResponse, ExternalWarrantyDetailsDTO.class);
-		ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse, ExternalWarrantyDetailsResultWrapper.class);
-        externalWarrantyDetailsDTOList = resultWrapper.getResults();
+			ResponseEntity<String> response = restTemplate.postForEntity(crmUrl, requestEntity, String.class);
+			String jsonResponse = response.getBody();
+			ObjectMapper objectMapper = new ObjectMapper();
+			ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
+					ExternalWarrantyDetailsResultWrapper.class);
+			externalWarrantyDetailsDTOList = resultWrapper.getResults();
 		} catch (JsonProcessingException je) {
 			System.out.println("Error in parsing response!");
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
 		}
-		//ExternalWarrantyDetailsDTO responseBody = response.getBody();
 		ExternalWarrantyDetailsDTO responseFromCRM = externalWarrantyDetailsDTOList.get(0);
-		if(responseFromCRM ==null) {
+		if (responseFromCRM == null) {
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
 		}
-		WarrantyDetails warrantyDetail= new WarrantyDetails();
+		WarrantyDetails warrantyDetail = new WarrantyDetails();
 		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
 		warrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
 		warrantyDetail.setInitUserType(warrantyDetailsRequests.getInitUserType());
@@ -180,9 +199,48 @@ public class WarrantyDetailsService {
 		warrantyDetail.setApprovedBy(warrantyDetailsRequests.getApprovedBy());
 		return warrantyDetail;
 	}
-	
-    public static String base64Encode(String text) {
-        byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8));
-        return new String(encodedBytes, StandardCharsets.UTF_8);
-    }
+
+	public static String base64Encode(String text) {
+		byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8));
+		return new String(encodedBytes, StandardCharsets.UTF_8);
+	}
+
+	public List<WarrantyDetailsDTO> findWarrantyDetailsByMobileNoFromCRM(String mobileNo) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("mobileNo", mobileNo);
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(crmMobileNoUrl, requestEntity, String.class);
+			String jsonResponse = response.getBody();
+			System.out.println(jsonResponse);
+			ObjectMapper objectMapper = new ObjectMapper();
+			ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
+					ExternalWarrantyDetailsResultWrapper.class);
+			externalWarrantyDetailsDTOList = resultWrapper.getResults();
+		} catch (JsonProcessingException je) {
+			System.out.println("Error in parsing response!");
+			throw new EntityNotFoundException("Warranties for this Mobile No is not found in CRM");
+		}
+		if (externalWarrantyDetailsDTOList.isEmpty()) {
+			throw new EntityNotFoundException("Warranties for this Mobile No is not found in CRM");
+		}
+		List<WarrantyDetails> internalWarrantyList = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, null)
+				.getContent();
+		if (!internalWarrantyList.isEmpty()) {
+			//Get all the serialNos in a Map
+			Map<String, WarrantyDetails> map2 = internalWarrantyList.stream()
+					.collect(Collectors.toMap(WarrantyDetails::getWarrantySerialNo, wd -> wd));
+			//Filter out serialNos present in existing DB
+			List<ExternalWarrantyDetailsDTO> differenceList = externalWarrantyDetailsDTOList.stream()
+	                .filter(wd -> !map2.containsKey(wd.getWarrantySerialNo()))
+	                .collect(Collectors.toList());
+			return convertToDTOListExternal(differenceList);
+
+		}
+		return convertToDTOListExternal(externalWarrantyDetailsDTOList);
+	}
 }
