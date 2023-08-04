@@ -8,6 +8,10 @@ import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -89,7 +93,23 @@ public class WarrantyDetailsController {
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
 				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
 	}
-
+	
+	@GetMapping(value = { "stockist/{id}" })
+	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
+	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
+		Sort sort = Sort.by("warrantySerialNo").descending();
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+		Page<WarrantyDetails> pageResult;
+		pageResult = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, pageable);
+		Map<String, Object> response = new HashMap<>();
+	    response.put("warrantyDetails", pageResult.getContent());
+	    response.put("currentPage", pageResult.getNumber());
+	    response.put("totalItems", pageResult.getTotalElements());
+	    response.put("totalPages", pageResult.getTotalPages());
+		return new ResponseEntity<>(new ResponseData<>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), response, null), HttpStatus.OK);
+	}
+	
 	@PostMapping
 	public ResponseEntity<ResponseData<?>> createWarrantyDetail(@RequestBody WarrantyDetails warrantyDetail) {
 		WarrantyDetails createdWarranty = warrantyDetailsService.createWarrantyDetails(warrantyDetail);
