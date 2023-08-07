@@ -59,28 +59,30 @@ public class WarrantyDetailsController {
 			@RequestParam(name = "mobileNo", required = false) String invoiceNo,
 			@RequestParam(name = "allocationStatus", required = false) AllocationStatus allocationStatus) {
 
-		List<WarrantyDetails> customers;
+		List<WarrantyDetails> warrantyDetailsList;
 
 		if (invoiceNo != null && allocationStatus != null) {
 			// Fetch users by roleName and societyCode
-			customers = warrantyDetailsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
+			warrantyDetailsList = warrantyDetailsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
 		} else if (invoiceNo != null) {
 			// Fetch users by roleName and relationship
-			customers = warrantyDetailsRepository.findByInvoiceNo(invoiceNo);
+			warrantyDetailsList = warrantyDetailsRepository.findByInvoiceNo(invoiceNo);
 		} else if (allocationStatus != null) {
 			// Fetch users by societyCode and relationship
-			customers = warrantyDetailsRepository.findByAllocationStatus(allocationStatus);
+			warrantyDetailsList = warrantyDetailsRepository.findByAllocationStatus(allocationStatus);
 		} else {
 			// Return all users if no params are specified
-			customers = warrantyDetailsRepository.findAll();
+			warrantyDetailsList = warrantyDetailsRepository.findAll();
 		}
-
-		if (customers.isEmpty()) {
+		
+		List<WarrantyDetails> warrantyRequestsFiltered = warrantyDetailsList.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
+		
+		if (warrantyDetailsList.isEmpty()) {
 			return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("No WarrantyDetails Found",
-					HttpStatus.NOT_FOUND.value(), customers, null), HttpStatus.NOT_FOUND);
+					HttpStatus.NOT_FOUND.value(), warrantyRequestsFiltered, null), HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), customers, null), HttpStatus.OK);
+				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = { "customer/{id}" })
