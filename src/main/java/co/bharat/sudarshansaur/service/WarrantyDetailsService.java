@@ -128,35 +128,34 @@ public class WarrantyDetailsService {
 					});
 			parsedWarrantyDetail = validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
 			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
-			Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
-			if (stockist == null) {
-				Stockists newStockist = stockistsRepository
-						.save(Stockists.builder().email(parsedWarrantyDetail.getCrmStockistEmail())
-								.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
-								.stockistName(parsedWarrantyDetail.getCrmStockistName())
-								.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
-								.status(UserStatus.CREATED).build());
-				parsedWarrantyDetail.setStockists(newStockist);
-
-			} else {
-				parsedWarrantyDetail.setStockists(stockist);
+			if(warrantyDetailsRequests.getStockists()==null) {
+				Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
+				if (stockist == null) {
+					Stockists newStockist = stockistsRepository
+							.save(Stockists.builder().email(parsedWarrantyDetail.getCrmStockistEmail())
+									.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
+									.stockistName(parsedWarrantyDetail.getCrmStockistName())
+									.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
+									.status(UserStatus.CREATED).build());
+					parsedWarrantyDetail.setStockists(newStockist);
+	
+				} else {
+					parsedWarrantyDetail.setStockists(stockist);
+				}
 			}
 		}
-		if (UserType.CUSTOMER.equals(warrantyDetailsRequests.getInitUserType())) {
-			parsedWarrantyDetail
-					.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
-							.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
-		}
-		if (UserType.DEALER.equals(warrantyDetailsRequests.getInitUserType())) {
+		if (warrantyDetailsRequests.getDealers().getDealerId() != 0) {
 			parsedWarrantyDetail
 					.setDealers(dealersRepository.findById(warrantyDetailsRequests.getDealers().getDealerId())
 							.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
 			// Add the customer if not present already(customerId will not be present)
 			if (warrantyDetailsRequests.getCustomer().getCustomerId() == 0) {
-				warrantyDetailsRequests.getCustomer()
-						.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
-				Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
-				parsedWarrantyDetail.setCustomer(newCustomer);
+				if(parsedWarrantyDetail.getCrmCustomerMobileNo()!=null) {
+					warrantyDetailsRequests.getCustomer()
+					.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
+					Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
+					parsedWarrantyDetail.setCustomer(newCustomer);
+				}
 			} else {
 				parsedWarrantyDetail
 						.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
