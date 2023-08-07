@@ -183,7 +183,9 @@ public class WarrantyDetailsService {
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
 		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
 		try {
+			System.out.println("Sending Request to CRM");
 			ResponseEntity<String> response = restTemplate.postForEntity(crmUrl, requestEntity, String.class);
+			System.out.println("Received Response from CRM");
 			String jsonResponse = response.getBody();
 			ObjectMapper objectMapper = new ObjectMapper();
 			ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
