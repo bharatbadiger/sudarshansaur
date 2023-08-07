@@ -38,7 +38,6 @@ import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserStatus;
-import co.bharat.sudarshansaur.enums.UserType;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.repository.StockistsRepository;
@@ -223,7 +222,7 @@ public class WarrantyDetailsService {
 		try {
 			ResponseEntity<String> response = restTemplate.postForEntity(crmMobileNoUrl, requestEntity, String.class);
 			String jsonResponse = response.getBody();
-			System.out.println(jsonResponse);
+			//System.out.println(jsonResponse);
 			ObjectMapper objectMapper = new ObjectMapper();
 			ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
 					ExternalWarrantyDetailsResultWrapper.class);

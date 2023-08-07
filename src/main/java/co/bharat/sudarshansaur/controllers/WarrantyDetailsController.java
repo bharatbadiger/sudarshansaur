@@ -111,7 +111,7 @@ public class WarrantyDetailsController {
 	
 	@GetMapping(value = { "stockist/mobileNo/{mobileNo}" })
 	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
-	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
+	        @RequestParam(name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
 		Sort sort = Sort.by("warrantySerialNo").descending();
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Page<WarrantyDetails> pageResult;

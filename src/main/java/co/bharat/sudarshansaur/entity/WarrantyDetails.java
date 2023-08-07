@@ -14,8 +14,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
