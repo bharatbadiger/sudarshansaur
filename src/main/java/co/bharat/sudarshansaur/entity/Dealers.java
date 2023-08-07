@@ -86,8 +86,12 @@ public class Dealers implements Users {
 	@JsonBackReference("dealers-stockists")
 	private Stockists stockists;
 	
-	@OneToMany(mappedBy = "dealers", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference("dealers-warranty")
-	private List<WarrantyDetails> warrantyDetails;
+	/*
+	 * @OneToMany(mappedBy = "dealers", cascade = CascadeType.ALL, fetch =
+	 * FetchType.LAZY)
+	 * 
+	 * @JsonManagedReference("dealers-warranty") private List<WarrantyDetails>
+	 * warrantyDetails;
+	 */
 
 }

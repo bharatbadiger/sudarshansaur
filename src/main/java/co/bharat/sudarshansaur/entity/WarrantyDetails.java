@@ -76,7 +76,7 @@ public class WarrantyDetails {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dealer_id")
-    @JsonBackReference("dealers-warranty")
+    //@JsonBackReference("dealers-warranty")
 	private Dealers dealers;
 	
     @ManyToOne(fetch = FetchType.EAGER)
