@@ -111,9 +111,14 @@ public class WarrantyDetailsController {
 	
 	@GetMapping(value = { "stockist/mobileNo/{mobileNo}" })
 	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
-	        @RequestParam(name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
+	        @RequestParam(name = "pageSize", required = false) Integer pageSize, @PathVariable String mobileNo) {
 		Sort sort = Sort.by("warrantySerialNo").descending();
-		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+		Pageable pageable;
+		if(pageSize==null) {
+			pageable = Pageable.unpaged();
+		} else {
+			pageable = PageRequest.of(pageNumber, pageSize, sort);
+		}
 		Page<WarrantyDetails> pageResult;
 		pageResult = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, pageable);
 		Map<String, Object> response = new HashMap<>();
@@ -127,10 +132,13 @@ public class WarrantyDetailsController {
 	
 	@GetMapping(value = { "stockist/crm/{mobileNo}" })
 	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyDetailsForStockistMobileNoFromCRM(@RequestParam(defaultValue = "1", name = "pageNumber", required = false) int pageNumber,
-	        @RequestParam(defaultValue = "100", name = "pageSize", required = false) int pageSize, @PathVariable String mobileNo) {
+	        @RequestParam(name = "pageSize", required = false) Integer pageSize, @PathVariable String mobileNo) {
 		List<WarrantyDetailsDTO> externalWarrantyDetails = warrantyDetailsService.findWarrantyDetailsByMobileNoFromCRM(mobileNo);
 		int totalResults =externalWarrantyDetails.size();
-		int totalPages = (int) Math.ceil((double) totalResults / pageSize);
+		if(pageSize==null) {
+			pageSize = totalResults;
+		}
+		//int totalPages = (int) Math.ceil((double) totalResults / pageSize);
 		int startIndex = Math.abs((pageNumber - 1) * pageSize);
 		int endIndex = Math.min(startIndex + pageSize, totalResults);
 		return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("WarrantyDetails Fetched Successfully",
