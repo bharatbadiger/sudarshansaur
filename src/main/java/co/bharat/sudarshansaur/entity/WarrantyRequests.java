@@ -98,6 +98,8 @@ public class WarrantyRequests {
 	
 	private AllocationStatus status;
 	
+	private String rejectReason;
+	
 	@Embedded
 	private ImageDetails images; 
 	
