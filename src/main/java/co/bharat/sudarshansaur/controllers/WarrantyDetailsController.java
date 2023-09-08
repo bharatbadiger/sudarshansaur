@@ -130,6 +130,17 @@ public class WarrantyDetailsController {
 				HttpStatus.OK.value(), response, null), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = { "crm/{serialNo}" })
+	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForWarrantySerialNo(@PathVariable String serialNo) {
+		WarrantyDetails warrantyDetails = warrantyDetailsService.getWarrantyDetailsFromCRM(serialNo);
+		if(warrantyDetails == null) {
+			return new ResponseEntity<>(new ResponseData<WarrantyDetails>("No WarrantyDetails Found",
+					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(new ResponseData<>("WarrantyDetails Fetched Successfully",
+				HttpStatus.OK.value(), warrantyDetails, null), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = { "stockist/crm/{mobileNo}" })
 	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyDetailsForStockistMobileNoFromCRM(@RequestParam(defaultValue = "1", name = "pageNumber", required = false) int pageNumber,
 	        @RequestParam(name = "pageSize", required = false) Integer pageSize, @PathVariable String mobileNo) {

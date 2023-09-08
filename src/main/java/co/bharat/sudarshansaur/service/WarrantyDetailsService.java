@@ -207,6 +207,36 @@ public class WarrantyDetailsService {
 		warrantyDetail.setApprovedBy(warrantyDetailsRequests.getApprovedBy());
 		return warrantyDetail;
 	}
+	
+	public WarrantyDetails getWarrantyDetailsFromCRM(String warrantySerialNo) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("serial_no", warrantySerialNo);
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailsDTOList;
+		try {
+			System.out.println("Sending Request to CRM");
+			ResponseEntity<String> response = restTemplate.postForEntity(crmUrl, requestEntity, String.class);
+			System.out.println("Received Response from CRM");
+			String jsonResponse = response.getBody();
+			ObjectMapper objectMapper = new ObjectMapper();
+			ExternalWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
+					ExternalWarrantyDetailsResultWrapper.class);
+			externalWarrantyDetailsDTOList = resultWrapper.getResults();
+		} catch (JsonProcessingException je) {
+			System.out.println("Error in parsing response!");
+			throw new EntityNotFoundException("This Warranty is not found in CRM");
+		}
+		ExternalWarrantyDetailsDTO responseFromCRM = externalWarrantyDetailsDTOList.get(0);
+		if (responseFromCRM == null) {
+			throw new EntityNotFoundException("This Warranty is not found in CRM");
+		}
+		WarrantyDetails warrantyDetail = new WarrantyDetails();
+		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
+		return warrantyDetail;
+	}
 
 	public static String base64Encode(String text) {
 		byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8));
