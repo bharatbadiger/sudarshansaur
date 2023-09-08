@@ -2,13 +2,15 @@ package co.bharat.sudarshansaur.dto;
 
 
 import java.util.Date;
+import java.util.List;
 
+import co.bharat.sudarshansaur.entity.Address;
 import co.bharat.sudarshansaur.entity.Customers;
-import co.bharat.sudarshansaur.entity.Dealers;
+import co.bharat.sudarshansaur.entity.ImageDetails;
+import co.bharat.sudarshansaur.entity.UserInfo;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
-import co.bharat.sudarshansaur.interfaces.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,21 +24,33 @@ public class WarrantyRequestsDTO {
 	
 	private long requestId;
 	
-	private WarrantyDetails warrantyDetails;
-
-	private AllocationStatus allocationStatus;
-	
-	private Dealers dealers;
-	
 	private Customers customers;
+    
+    private Address installationAddress;
+    
+    private Address ownerAddress;
+    
+	private WarrantyDetails warrantyDetails;
+		
+	private UserInfo dealerInfo;
+	
+	private UserInfo technicianInfo;
+	
+	private UserInfo plumberInfo;
+	
+	private List<AnswersDTO> answers; 
+	
+	private AllocationStatus status;
+	
+	private ImageDetails images; 
 	
     private Date createdOn;
 
 	private Date updatedOn;
-	
+
 	private UserType initUserType;
 	
-	private Users initiatedBy;
+	private String initiatedBy;
 
 	private String approvedBy;
 

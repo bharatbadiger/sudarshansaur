@@ -2,6 +2,8 @@ package co.bharat.sudarshansaur.entity;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -34,7 +36,7 @@ public class Customers implements Users{
 
 	private String customerName;
 	
-	private String password;
+	//private String password;
 	
 	@Column(unique = true)
 	private String mobileNo;
@@ -47,6 +49,22 @@ public class Customers implements Users{
 
 	@Embedded
 	private Address address;
+	
+	@Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "houseNo", column = @Column(name = "inst_add_houseNo")),
+        @AttributeOverride(name = "area", column = @Column(name = "inst_add_area")),
+        @AttributeOverride(name = "street1", column = @Column(name = "inst_add_street1")),
+        @AttributeOverride(name = "street2", column = @Column(name = "inst_add_street2")),
+        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark")),
+        @AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2")),
+        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town")),
+        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk")),
+        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state")),
+        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country")),
+        @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode"))
+    })
+	private Address installationAddress;
 
 	private Date createdOn;
 
@@ -66,20 +84,5 @@ public class Customers implements Users{
 	private Date lastLogin;
 
 	private String image;
-
-	private Date lastPurchaseDate;
-
-	// @OneToMany(mappedBy = "customers", cascade = CascadeType.ALL, orphanRemoval =
-	// true)
-
-	/*
-	 * //@OneToMany(mappedBy = "customers")
-	 * 
-	 * @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch =
-	 * FetchType.LAZY)
-	 * 
-	 * @JsonManagedReference("customer-warranty") private List<WarrantyDetails>
-	 * warrantyDetails;
-	 */
 
 }

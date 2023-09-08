@@ -153,14 +153,14 @@ public class WarrantyDetailsService {
 			if (warrantyDetailsRequests.getCustomer() == null) {
 				if(parsedWarrantyDetail.getCrmCustomerMobileNo()!=null) {
 					Customers cust = Customers.builder().mobileNo(parsedWarrantyDetail.getCrmCustomerMobileNo())
-							.password(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()))
+							//.password(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()))
 							.customerName(parsedWarrantyDetail.getCrmCustomerName()).build();
 					Customers newCustomer = customersRepository.save(cust);
 					parsedWarrantyDetail.setCustomer(newCustomer);
 				}
 			} else if (warrantyDetailsRequests.getCustomer().getCustomerId() == 0){
-				warrantyDetailsRequests.getCustomer()
-				.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
+				warrantyDetailsRequests.getCustomer();
+				//.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
 				Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
 				parsedWarrantyDetail.setCustomer(newCustomer);
 			} else {

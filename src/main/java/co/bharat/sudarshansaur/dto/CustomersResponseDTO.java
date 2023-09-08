@@ -1,10 +1,8 @@
 package co.bharat.sudarshansaur.dto;
 
 import java.util.Date;
-import java.util.List;
 
 import co.bharat.sudarshansaur.entity.Address;
-import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.interfaces.Users;
 import lombok.AllArgsConstructor;
@@ -21,9 +19,7 @@ public class CustomersResponseDTO implements Users {
 	private long customerId;
 
 	private String customerName;
-
-	// private String password;
-
+	
 	private String mobileNo;
 
 	private UserStatus status;
@@ -32,6 +28,8 @@ public class CustomersResponseDTO implements Users {
 
 	private Address address;
 
+	private Address installationAddress;
+
 	private Date createdOn;
 
 	private Date updatedOn;
@@ -39,9 +37,5 @@ public class CustomersResponseDTO implements Users {
 	private Date lastLogin;
 
 	private String image;
-
-	private Date lastPurchaseDate;
-
-	private List<WarrantyDetails> warrantyDetails;
 
 }

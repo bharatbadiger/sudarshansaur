@@ -56,13 +56,16 @@ public class CustomersController {
 				HttpStatus.OK.value(), statusCounts, null), HttpStatus.OK);
 	}
 
-	@PostMapping(value = { "/authenticate" })
-	public ResponseEntity<ResponseData<CustomersResponseDTO>> authenticateCustomer(@Validated @RequestBody Customers customers) {
-		CustomersResponseDTO customer = customersService.findByEmailAndPassword(customers);
-		return new ResponseEntity<>(
-				new ResponseData<CustomersResponseDTO>("Customer Fetched Successfully", HttpStatus.OK.value(), customer, null),
-				HttpStatus.OK);
-	}
+	/*
+	 * @PostMapping(value = { "/authenticate" }) public
+	 * ResponseEntity<ResponseData<CustomersResponseDTO>>
+	 * authenticateCustomer(@Validated @RequestBody Customers customers) {
+	 * CustomersResponseDTO customer =
+	 * customersService.findByEmailAndPassword(customers); return new
+	 * ResponseEntity<>( new
+	 * ResponseData<CustomersResponseDTO>("Customer Fetched Successfully",
+	 * HttpStatus.OK.value(), customer, null), HttpStatus.OK); }
+	 */
 
 	@GetMapping
 	public ResponseEntity<ResponseData<List<CustomersResponseDTO>>> getCustomersByAttributes(

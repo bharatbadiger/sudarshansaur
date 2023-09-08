@@ -11,12 +11,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
-	private String addressLine1;
+	
+	private String houseNo;
 
-	private String addressLine2;
+	private String area;
 
-	private String city;
+	private String street1;
 
+	private String street2;
+	
+	private String landmark;
+	
+	private String mobile2;
+	
+	private String town;
+	
+	private String taluk;
+	
 	private String state;
 
 	private String country = "India";

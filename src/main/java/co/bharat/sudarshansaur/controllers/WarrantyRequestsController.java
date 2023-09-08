@@ -72,7 +72,7 @@ public class WarrantyRequestsController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ResponseData<?>> createWarrantyRequests(@Validated @RequestBody WarrantyRequests warrantyRequests) {
+	public ResponseEntity<ResponseData<?>> createWarrantyRequests(@Validated @RequestBody WarrantyRequestsDTO warrantyRequests) {
 		WarrantyRequests newWarrantyRequests = warrantyRequestsService.saveWarrantyRequests(warrantyRequests);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyRequest Created Successfully", HttpStatus.OK.value(), newWarrantyRequests, null),
@@ -98,7 +98,7 @@ public class WarrantyRequestsController {
 
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateWarrantyRequest(@PathVariable(required = false) Long id,
-			@RequestBody WarrantyRequests warrantyRequests) {
+			@RequestBody WarrantyRequestsDTO warrantyRequests) {
 		WarrantyRequests updatedWarrantyRequests = warrantyRequestsService.saveWarrantyRequests(warrantyRequests);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyRequest Updated Successfully", HttpStatus.OK.value(), updatedWarrantyRequests, null),
