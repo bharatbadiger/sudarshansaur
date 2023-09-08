@@ -42,7 +42,7 @@ public class WarrantyRequests {
 	@GeneratedValue
 	private long requestId;
 	
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
 	private Customers customers;
     

@@ -115,7 +115,7 @@ public class WarrantyRequestsService {
 
 	private Answers convertFromDTOAnswers(AnswersDTO answersDTO, WarrantyRequestsDTO warrantyRequests) {
 		Answers answers = new Answers();
-		answers.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElse(null));
+		//answers.setCustomers(customersRepository.findById(warrantyRequests.getCustomers().getCustomerId()).orElse(null));
 		answers.setQuestions(questionsRepository.findById(answersDTO.getQuestions().getQuestionId()).orElse(null));
 		//answers.setWarrantyRequests(convertFromDTO(warrantyRequests));
 		BeanUtils.copyProperties(answersDTO, answers);
