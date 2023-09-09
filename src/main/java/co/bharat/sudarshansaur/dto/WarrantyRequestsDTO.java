@@ -48,9 +48,9 @@ public class WarrantyRequestsDTO {
 	
 	private ImageDetails images; 
 	
-	private Date installationDate;
+	private String installationDate;
 	
-	private Date invoiceDate;
+	private String invoiceDate;
 	
 	private String invoiceNumber;
 	

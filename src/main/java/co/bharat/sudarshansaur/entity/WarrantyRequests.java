@@ -106,9 +106,11 @@ public class WarrantyRequests {
 	@Embedded
 	private ImageDetails images; 
 	
-	private Date installationDate;
+	@Column(length = 30)
+	private String installationDate;
 	
-	private Date invoiceDate;
+	@Column(length = 30)
+	private String invoiceDate;
 	
 	@Column(length = 20)
 	private String invoiceNumber;
