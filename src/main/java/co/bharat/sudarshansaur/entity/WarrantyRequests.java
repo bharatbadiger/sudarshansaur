@@ -51,7 +51,7 @@ public class WarrantyRequests {
         @AttributeOverride(name = "street1", column = @Column(name = "inst_add_street1")),
         @AttributeOverride(name = "street2", column = @Column(name = "inst_add_street2")),
         @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark", length = 30)),
-        @AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2", length = 14)),
+        //@AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2", length = 14)),
         @AttributeOverride(name = "town", column = @Column(name = "inst_add_town", length = 20)),
         @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk", length = 20)),
         @AttributeOverride(name = "state", column = @Column(name = "inst_add_state", length = 20)),

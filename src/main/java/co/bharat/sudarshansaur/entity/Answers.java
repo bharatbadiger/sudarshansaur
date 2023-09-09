@@ -24,9 +24,12 @@ public class Answers {
 	@GeneratedValue
 	private long id;
 
-	@ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
-	private Customers customers;
+	/*
+	 * @ManyToOne
+	 * 
+	 * @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
+	 * private Customers customers;
+	 */
 	
 	@ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "questionId")
