@@ -25,15 +25,14 @@ public class Address {
 	@Column(length = 30)
 	private String landmark;
 	
-	/*
-	 * @Column(length = 14) private String mobile2;
-	 */
-	
 	@Column(length = 20)
 	private String town;
 	
 	@Column(length = 20)
 	private String taluk;
+	
+	@Column(length = 20)
+	private String district;
 	
 	@Column(length = 20)
 	private String state;
