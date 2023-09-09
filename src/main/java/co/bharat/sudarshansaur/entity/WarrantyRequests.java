@@ -21,8 +21,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
@@ -48,17 +46,17 @@ public class WarrantyRequests {
     
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "houseNo", column = @Column(name = "inst_add_houseNo")),
+        @AttributeOverride(name = "houseNo", column = @Column(name = "inst_add_houseNo", length = 10)),
         @AttributeOverride(name = "area", column = @Column(name = "inst_add_area")),
         @AttributeOverride(name = "street1", column = @Column(name = "inst_add_street1")),
         @AttributeOverride(name = "street2", column = @Column(name = "inst_add_street2")),
-        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark")),
-        @AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2")),
-        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town")),
-        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk")),
-        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state")),
-        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country")),
-        @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode"))
+        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark", length = 30)),
+        @AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2", length = 14)),
+        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town", length = 20)),
+        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk", length = 20)),
+        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state", length = 20)),
+        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country", length = 20)),
+        @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode", length = 6))
     })
     private Address installationAddress;
     
@@ -71,33 +69,35 @@ public class WarrantyRequests {
 		
 	@Embedded
 	@AttributeOverrides({
-        @AttributeOverride(name = "name", column = @Column(name = "dealer_name")),
-        @AttributeOverride(name = "mobile", column = @Column(name = "dealer_mobile")),
-        @AttributeOverride(name = "place", column = @Column(name = "dealer_place"))
+        @AttributeOverride(name = "name", column = @Column(name = "dealer_name", length = 40)),
+        @AttributeOverride(name = "mobile", column = @Column(name = "dealer_mobile", length = 14)),
+        @AttributeOverride(name = "place", column = @Column(name = "dealer_place", length = 30))
 	})
 	private UserInfo dealerInfo;
 	
 	@Embedded
 	@AttributeOverrides({
-        @AttributeOverride(name = "name", column = @Column(name = "technician_name")),
-        @AttributeOverride(name = "mobile", column = @Column(name = "technician_mobile")),
-        @AttributeOverride(name = "place", column = @Column(name = "technician_place"))
+        @AttributeOverride(name = "name", column = @Column(name = "technician_name", length = 40)),
+        @AttributeOverride(name = "mobile", column = @Column(name = "technician_mobile", length = 14)),
+        @AttributeOverride(name = "place", column = @Column(name = "technician_place", length = 30))
 	})
 	private UserInfo technicianInfo;
 	
 	@Embedded
 	@AttributeOverrides({
-        @AttributeOverride(name = "name", column = @Column(name = "plumber_name")),
-        @AttributeOverride(name = "mobile", column = @Column(name = "plumber_mobile")),
-        @AttributeOverride(name = "place", column = @Column(name = "plumber_place"))
+        @AttributeOverride(name = "name", column = @Column(name = "plumber_name", length = 40)),
+        @AttributeOverride(name = "mobile", column = @Column(name = "plumber_mobile", length = 14)),
+        @AttributeOverride(name = "place", column = @Column(name = "plumber_place", length = 30))
 	})
 	private UserInfo plumberInfo;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Answers> answers; 
 	
+	@Column(length = 20)
 	private AllocationStatus status;
 	
+	@Column(length = 50)
 	private String rejectReason;
 	
 	@Embedded
@@ -121,8 +121,10 @@ public class WarrantyRequests {
 	
 	private UserType initUserType;
 	
+	@Column(length = 40)
 	private String initiatedBy;
 
+	@Column(length = 40)
 	private String approvedBy;
 
 }

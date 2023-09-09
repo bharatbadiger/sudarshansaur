@@ -195,6 +195,9 @@ public class WarrantyDetailsService {
 			System.out.println("Error in parsing response!");
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
 		}
+		if (externalWarrantyDetailsDTOList.isEmpty()) {
+			throw new EntityNotFoundException("This Warranty is not found in CRM");
+		}
 		ExternalWarrantyDetailsDTO responseFromCRM = externalWarrantyDetailsDTOList.get(0);
 		if (responseFromCRM == null) {
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
@@ -229,10 +232,10 @@ public class WarrantyDetailsService {
 			System.out.println("Error in parsing response!");
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
 		}
-		ExternalWarrantyDetailsDTO responseFromCRM = externalWarrantyDetailsDTOList.get(0);
-		if (responseFromCRM == null) {
+		if (externalWarrantyDetailsDTOList.isEmpty()) {
 			throw new EntityNotFoundException("This Warranty is not found in CRM");
 		}
+		ExternalWarrantyDetailsDTO responseFromCRM = externalWarrantyDetailsDTOList.get(0);
 		WarrantyDetails warrantyDetail = new WarrantyDetails();
 		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
 		return warrantyDetail;
