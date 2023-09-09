@@ -50,12 +50,12 @@ public class WarrantyRequests {
         @AttributeOverride(name = "area", column = @Column(name = "inst_add_area")),
         @AttributeOverride(name = "street1", column = @Column(name = "inst_add_street1")),
         @AttributeOverride(name = "street2", column = @Column(name = "inst_add_street2")),
-        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark", length = 30)),
-        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town", length = 20)),
-        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk", length = 20)),
-        @AttributeOverride(name = "district", column = @Column(name = "inst_add_district", length = 20)),
-        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state", length = 20)),
-        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country", length = 20)),
+        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark", length = 40)),
+        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town", length = 40)),
+        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk", length = 40)),
+        @AttributeOverride(name = "district", column = @Column(name = "inst_add_district", length = 40)),
+        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state", length = 40)),
+        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country", length = 40)),
         @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode", length = 6))
     })
     private Address installationAddress;
