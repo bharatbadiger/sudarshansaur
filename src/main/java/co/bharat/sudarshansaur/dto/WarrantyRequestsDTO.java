@@ -42,7 +42,17 @@ public class WarrantyRequestsDTO {
 	
 	private AllocationStatus status;
 	
+	private String rejectReason;
+	
+	private String mobile2;
+	
 	private ImageDetails images; 
+	
+	private Date installationDate;
+	
+	private Date invoiceDate;
+	
+	private String invoiceNumber;
 	
     private Date createdOn;
 
