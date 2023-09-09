@@ -52,17 +52,17 @@ public class Customers implements Users{
 	
 	@Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "houseNo", column = @Column(name = "inst_add_houseNo")),
+        @AttributeOverride(name = "houseNo", column = @Column(name = "inst_add_houseNo", length = 10)),
         @AttributeOverride(name = "area", column = @Column(name = "inst_add_area")),
         @AttributeOverride(name = "street1", column = @Column(name = "inst_add_street1")),
         @AttributeOverride(name = "street2", column = @Column(name = "inst_add_street2")),
-        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark")),
-        @AttributeOverride(name = "mobile2", column = @Column(name = "inst_add_mobile2")),
-        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town")),
-        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk")),
-        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state")),
-        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country")),
-        @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode"))
+        @AttributeOverride(name = "landmark", column = @Column(name = "inst_add_landmark", length = 30)),
+        @AttributeOverride(name = "town", column = @Column(name = "inst_add_town", length = 20)),
+        @AttributeOverride(name = "taluk", column = @Column(name = "inst_add_taluk", length = 20)),
+        @AttributeOverride(name = "district", column = @Column(name = "inst_add_district", length = 20)),
+        @AttributeOverride(name = "state", column = @Column(name = "inst_add_state", length = 20)),
+        @AttributeOverride(name = "country", column = @Column(name = "inst_add_country", length = 20)),
+        @AttributeOverride(name = "zipCode", column = @Column(name = "inst_add_zipCode", length = 6))
     })
 	private Address installationAddress;
 
