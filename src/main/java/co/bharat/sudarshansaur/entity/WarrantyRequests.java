@@ -100,6 +100,9 @@ public class WarrantyRequests {
 	@Column(length = 50)
 	private String rejectReason;
 	
+	@Column(length =14)
+	private String mobile2;
+	
 	@Embedded
 	private ImageDetails images; 
 	

@@ -18,7 +18,7 @@ public interface CustomersRepository extends JpaRepository<Customers,Long>{
 	
 	List<Customers> findByMobileNoAndStatus(String mobileNo, UserStatus status);
 
-	List<Customers> findByMobileNo(String mobileNo);
+	Optional<Customers> findByMobileNo(String mobileNo);
 
 	List<Customers> findByStatus(UserStatus status);
 	

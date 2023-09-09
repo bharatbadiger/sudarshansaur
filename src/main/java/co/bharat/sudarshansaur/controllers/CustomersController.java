@@ -3,11 +3,11 @@ package co.bharat.sudarshansaur.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +49,17 @@ public class CustomersController {
 				HttpStatus.OK.value(), customer, null), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = { "mobileNo/{mobileNo}" })
+	public ResponseEntity<ResponseData<Customers>> getCustomerByMobileNo(@PathVariable String mobileNo) {
+		Optional<Customers> customer = customerRepository.findByMobileNo(mobileNo);
+		if(!customer.isPresent()) {
+			return new ResponseEntity<>(new ResponseData<Customers>("No Customers Found",
+					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(new ResponseData<Customers>("Customer Fetched Successfully",
+				HttpStatus.OK.value(), customer.get(), null), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = { "/count" })
 	public ResponseEntity<ResponseData<StatusCountDTO>> getAllcounts() {
 		StatusCountDTO statusCounts = statusCountService.getMergedStatusCounts();
@@ -81,9 +92,10 @@ public class CustomersController {
 			customersList = customerRepository.findByMobileNoAndEmail(mobileNo, email);
 		} else if (mobileNo != null && status != null) {
 			customersList = customerRepository.findByMobileNoAndStatus(mobileNo, status);
-		} else if (mobileNo != null) {
-			customersList = customerRepository.findByMobileNo(mobileNo);
-		} else if (status != null) {
+		} /*
+			 * else if (mobileNo != null) { customersList =
+			 * customerRepository.findByMobileNo(mobileNo); }
+			 */ else if (status != null) {
 			customersList = customerRepository.findByStatus(status);
 		} else {
 			customersList = customerRepository.findAll();
