@@ -101,8 +101,8 @@ public class WarrantyRequestsController {
 
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateWarrantyRequest(@PathVariable(required = false) Long id,
-			@RequestBody WarrantyRequestsDTO warrantyRequests) {
-		WarrantyRequests updatedWarrantyRequests = warrantyRequestsService.saveWarrantyRequests(warrantyRequests);
+			@Validated @RequestBody WarrantyRequestsDTO warrantyRequests) {
+		WarrantyRequests updatedWarrantyRequests = warrantyRequestsService.updateWarrantyRequests(warrantyRequests,id);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyRequest Updated Successfully", HttpStatus.OK.value(), updatedWarrantyRequests, null),
 				HttpStatus.OK);

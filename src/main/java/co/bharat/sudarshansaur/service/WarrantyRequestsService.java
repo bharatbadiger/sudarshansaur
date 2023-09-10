@@ -1,6 +1,8 @@
 package co.bharat.sudarshansaur.service;
 
+import java.beans.PropertyDescriptor;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +13,11 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mapping.AccessOptions.GetOptions.GetNulls;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,6 +35,7 @@ import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
 import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsResultWrapper;
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
 import co.bharat.sudarshansaur.entity.Answers;
+import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
@@ -204,9 +210,32 @@ public class WarrantyRequestsService {
 		BeanUtils.copyProperties(responseFromCRM, warrantyDetail);
 		return warrantyDetail;
 	}
+	
+	public WarrantyRequests updateWarrantyRequests(WarrantyRequestsDTO warrantyRequestsDTO, long requestId) {
+		WarrantyRequests existingWarrantyRequests = warrantyRequestsRepository.findById(requestId).orElseThrow(() -> new EntityNotFoundException("No Warranty Request found with the given id"));
+		WarrantyRequests updatedWarrantyRequests = convertFromDTO(warrantyRequestsDTO);
+		BeanUtils.copyProperties(updatedWarrantyRequests, existingWarrantyRequests, getNullPropertyNames(updatedWarrantyRequests));
+		warrantyRequestsRepository.save(existingWarrantyRequests);
+		return existingWarrantyRequests;
+	}
 
 	public static String base64Encode(String text) {
 		byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8));
 		return new String(encodedBytes, StandardCharsets.UTF_8);
 	}
+	
+	//Find the properties which are not present in the request
+    private String[] getNullPropertyNames(WarrantyRequests warrantyRequests) {
+        BeanWrapper beanWrapper = new BeanWrapperImpl(warrantyRequests);
+        List<String> nullPropertyNames = new ArrayList<>();
+        for (PropertyDescriptor propertyDescriptor : beanWrapper.getPropertyDescriptors()) {
+            String propertyName = propertyDescriptor.getName();
+            Object propertyValue = beanWrapper.getPropertyValue(propertyName);
+            // Exclude properties with numeric types from being considered for updating
+            if (propertyValue == null || (propertyValue instanceof String && ((String) propertyValue).isEmpty())|| (long.class.isAssignableFrom(propertyDescriptor.getPropertyType()))) {
+                nullPropertyNames.add(propertyName);
+            }
+        }
+        return nullPropertyNames.toArray(new String[0]);
+    }
 }
