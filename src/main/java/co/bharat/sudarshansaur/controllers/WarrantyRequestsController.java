@@ -109,9 +109,9 @@ public class WarrantyRequestsController {
 	}
 	
 	@GetMapping(value = { "customer/{id}" })
-	public ResponseEntity<ResponseData<List<WarrantyRequestsDTO>>> getWarrantyRequestForCustomer(@PathVariable Long id) {
-		List<WarrantyRequestsDTO> warrantyRequests1 = warrantyRequestsService.getAllWarrantyRequestsForCustomer(id);
-		return new ResponseEntity<>(new ResponseData<List<WarrantyRequestsDTO>>("WarrantyRequests Fetched Successfully",
+	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestForCustomer(@PathVariable Long id) {
+		List<WarrantyRequests> warrantyRequests1 = warrantyRequestsService.getAllWarrantyRequestsForCustomer(id);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("WarrantyRequests Fetched Successfully",
 				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
 	}
 	

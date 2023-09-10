@@ -17,7 +17,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mapping.AccessOptions.GetOptions.GetNulls;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -35,7 +34,6 @@ import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
 import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsResultWrapper;
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
 import co.bharat.sudarshansaur.entity.Answers;
-import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyDetails;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
@@ -122,9 +120,9 @@ public class WarrantyRequestsService {
 		return answers;
 	}
 
-	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForCustomer(long customerId) {
-		return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(customerId)
-				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found")));
+	public List<WarrantyRequests> getAllWarrantyRequestsForCustomer(long customerId) {
+		return warrantyRequestsRepository.findByCustomersCustomerId(customerId)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found"));
 	}
 
 	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(long dealerId) {
