@@ -22,22 +22,22 @@ public class Address {
 
 	private String street2;
 	
-	@Column(length = 30)
+	@Column(length = 40)
 	private String landmark;
 	
-	@Column(length = 20)
+	@Column(length = 40)
 	private String town;
 	
-	@Column(length = 20)
+	@Column(length = 40)
 	private String taluk;
 	
-	@Column(length = 20)
+	@Column(length = 40)
 	private String district;
 	
-	@Column(length = 20)
+	@Column(length = 40)
 	private String state;
 
-	@Column(length = 20)
+	@Column(length = 40)
 	private String country = "India";
 
 	@Column(length = 6)

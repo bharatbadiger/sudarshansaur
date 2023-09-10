@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +38,11 @@ public class WarrantyRequestsController {
 	private WarrantyRequestsService warrantyRequestsService;
 
 	@GetMapping(value = { "/{id}" })
-	public ResponseEntity<ResponseData<WarrantyRequestsDTO>> getWarrantyRequest(@PathVariable Long id) {
-		WarrantyRequestsDTO warrantyRequests1 = warrantyRequestsService.getWarrantyRequests(id);
-		return new ResponseEntity<>(new ResponseData<WarrantyRequestsDTO>("WarrantyRequest Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequests1, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<WarrantyRequests>> getWarrantyRequest(@PathVariable Long id) {
+		WarrantyRequests warrantyRequests = warrantyRequestsRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequest Found"));
+		return new ResponseEntity<>(new ResponseData<WarrantyRequests>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
 	}
 
 	@GetMapping
