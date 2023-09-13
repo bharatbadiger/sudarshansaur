@@ -64,4 +64,8 @@ public class WarrantyRequestsDTO {
 
 	private String approvedBy;
 
+	private String lat;
+
+	private String lon;
+
 }
