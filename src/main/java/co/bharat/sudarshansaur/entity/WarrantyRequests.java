@@ -139,4 +139,10 @@ public class WarrantyRequests {
 	@Column(length = 40)
 	private String approvedBy;
 
+	@Column(length = 10)
+	private String lat;
+
+	@Column(length = 10)
+	private String lon;
+
 }
