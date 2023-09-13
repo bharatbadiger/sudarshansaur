@@ -41,12 +41,13 @@ public class CustomersService {
 	
 	public CustomersResponseDTO saveCustomer(Customers customer) {
 		//Check if any WarrantyRequests exists
-		Optional<List<WarrantyRequests>> existingWR = warrantyRequestsRepository.findByCustomersCustomerIdAndStatus(customer.getCustomerId(), AllocationStatus.APPROVED);
-		if(existingWR.isPresent() && !existingWR.get().isEmpty()) {
-			customer.setStatus(UserStatus.ACTIVE);
-		} else {
-			customer.setStatus(UserStatus.PENDING);
-		}
+		/*
+		 * Optional<List<WarrantyRequests>> existingWR =
+		 * warrantyRequestsRepository.findByCustomersCustomerIdAndStatus(customer.
+		 * getCustomerId(), AllocationStatus.APPROVED); if(existingWR.isPresent() &&
+		 * !existingWR.get().isEmpty()) { customer.setStatus(UserStatus.ACTIVE); } else
+		 * { customer.setStatus(UserStatus.PENDING); }
+		 */
 		Customers newCustomer = customersRepository.save(customer);
 		return convertToDTO(newCustomer);
 	}
