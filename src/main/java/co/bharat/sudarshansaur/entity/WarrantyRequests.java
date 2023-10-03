@@ -21,6 +21,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
@@ -145,12 +147,16 @@ public class WarrantyRequests {
 	@Column(length = 10)
 	private String lon;
 	
+	@JsonProperty("isPhotoChecked")
 	private boolean isPhotoChecked;
 	
+	@JsonProperty("isOtherInfoChecked")
 	private boolean isOtherInfoChecked;
 	
+	@Column(length = 40)
 	private String verifiedBy;
 	
+	@Column(length = 30)
 	private String verifiedDate;
 
 }
