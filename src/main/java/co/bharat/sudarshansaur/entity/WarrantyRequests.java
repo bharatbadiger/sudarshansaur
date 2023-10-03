@@ -147,11 +147,11 @@ public class WarrantyRequests {
 	@Column(length = 10)
 	private String lon;
 	
-	//@JsonProperty("isPhotoChecked")
-	private Boolean photoChecked;
+	@JsonProperty(value = "isPhotoChecked")
+	private Boolean isPhotoChecked;
 	
-	//@JsonProperty("isOtherInfoChecked")
-	private Boolean otherInfoChecked;
+	@JsonProperty(value = "isOtherInfoChecked")
+	private Boolean isOtherInfoChecked;
 	
 	@Column(length = 40)
 	private String verifiedBy;
