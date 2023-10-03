@@ -14,6 +14,10 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import co.bharat.sudarshansaur.enums.AllocationStatus;
 import co.bharat.sudarshansaur.enums.UserType;
 import lombok.AllArgsConstructor;
@@ -70,15 +74,21 @@ public class WarrantyDetails {
 	
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stockist_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
+    @JsonIdentityReference(alwaysAsId = true)
 	private Stockists stockists;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dealer_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dealerId")
+    @JsonIdentityReference(alwaysAsId = true)
     //@JsonBackReference("dealers-warranty")
 	private Dealers dealers;
 	
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
+    @JsonIdentityReference(alwaysAsId = true)
     //@JsonBackReference("customer-warranty")
 	private Customers customer;
     
