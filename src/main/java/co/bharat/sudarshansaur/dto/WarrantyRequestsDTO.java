@@ -4,6 +4,8 @@ package co.bharat.sudarshansaur.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import co.bharat.sudarshansaur.entity.Address;
 import co.bharat.sudarshansaur.entity.Customers;
 import co.bharat.sudarshansaur.entity.ImageDetails;
@@ -68,8 +70,10 @@ public class WarrantyRequestsDTO {
 
 	private String lon;
 	
+	@JsonProperty("isPhotoChecked")
 	private boolean isPhotoChecked;
 	
+	@JsonProperty("isOtherInfoChecked")
 	private boolean isOtherInfoChecked;
 	
 	private String verifiedBy;
