@@ -70,11 +70,11 @@ public class WarrantyRequestsDTO {
 
 	private String lon;
 	
-	@JsonProperty("isPhotoChecked")
-	private Boolean isPhotoChecked;
+	//@JsonProperty("isPhotoChecked")
+	private Boolean photoChecked;
 	
-	@JsonProperty("isOtherInfoChecked")
-	private Boolean isOtherInfoChecked;
+	//@JsonProperty("isOtherInfoChecked")
+	private Boolean otherInfoChecked;
 	
 	private String verifiedBy;
 	
