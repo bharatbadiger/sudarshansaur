@@ -67,5 +67,13 @@ public class WarrantyRequestsDTO {
 	private String lat;
 
 	private String lon;
+	
+	private boolean isPhotoChecked;
+	
+	private boolean isOtherInfoChecked;
+	
+	private String verifiedBy;
+	
+	private String verifiedDate;
 
 }

@@ -144,5 +144,13 @@ public class WarrantyRequests {
 
 	@Column(length = 10)
 	private String lon;
+	
+	private boolean isPhotoChecked;
+	
+	private boolean isOtherInfoChecked;
+	
+	private String verifiedBy;
+	
+	private String verifiedDate;
 
 }

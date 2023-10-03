@@ -73,4 +73,7 @@ public class ExternalWarrantyDetailsDTO {
 	@JsonProperty("Description")
 	private String description;
 	
+	@JsonProperty("district")
+	private String crmStockistDistrict;
+	
 }

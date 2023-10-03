@@ -108,4 +108,6 @@ public class WarrantyDetails {
 
 	private String approvedBy;
 	
+	private String crmStockistDistrict;
+	
 }
