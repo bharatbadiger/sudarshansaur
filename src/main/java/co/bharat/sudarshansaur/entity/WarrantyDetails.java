@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import co.bharat.sudarshansaur.enums.AllocationStatus;
@@ -75,17 +75,24 @@ public class WarrantyDetails {
 	
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stockist_id")
-    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
-    //@JsonIdentityReference(alwaysAsId = true)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
+    @JsonIdentityReference(alwaysAsId = true)
 	private Stockists stockists;
     
-    @JsonValue
-    public String getStockistIdAsString() {
+    // Getter method to return stockists as a String
+    @JsonProperty("stockist")
+    public String getStockistsAsString() {
         if (stockists != null) {
             return String.valueOf(stockists.getStockistId());
         }
         return null; // Or an appropriate default value if stockists is null
     }
+    
+	/*
+	 * @JsonValue public String getStockistIdAsString() { if (stockists != null) {
+	 * return String.valueOf(stockists.getStockistId()); } return null; // Or an
+	 * appropriate default value if stockists is null }
+	 */
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dealer_id")
