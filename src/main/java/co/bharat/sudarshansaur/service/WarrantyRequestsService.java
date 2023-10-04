@@ -142,13 +142,14 @@ public class WarrantyRequestsService {
 			warrantyRequestsDto.setWarrantyDetails(warrantyDetail);
 			warrantyRequestsDto.setCustomers(customersRepository.findById(warrantyRequestsDto.getCustomers().getCustomerId()).orElse(null));
 			Stockists stockist = stockistsRepository.findByMobileNo(warrantyDetail.getCrmStockistMobileNo());
-			if (stockist == null) {
-				stockistsRepository.save(Stockists.builder().email(warrantyDetail.getCrmStockistEmail())
-						.mobileNo(warrantyDetail.getCrmStockistMobileNo())
-						.stockistName(warrantyDetail.getCrmStockistName())
-						.password(base64Encode(warrantyDetail.getCrmStockistMobileNo())).build());
-			}
-			warrantyDetail.setStockists(stockist);
+			/*
+			 * if (stockist == null) {
+			 * stockistsRepository.save(Stockists.builder().email(warrantyDetail.
+			 * getCrmStockistEmail()) .mobileNo(warrantyDetail.getCrmStockistMobileNo())
+			 * .stockistName(warrantyDetail.getCrmStockistName())
+			 * .password(base64Encode(warrantyDetail.getCrmStockistMobileNo())).build()); }
+			 */
+			warrantyDetail.setStockists(stockistsRepository.findByMobileNo(warrantyDetail.getCrmStockistMobileNo()));
 		}
 		if (UserType.CUSTOMER.equals(warrantyRequestsDto.getInitUserType())) {
 			warrantyRequestsDto
