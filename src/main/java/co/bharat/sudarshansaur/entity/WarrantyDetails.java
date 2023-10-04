@@ -80,7 +80,7 @@ public class WarrantyDetails {
 	private Stockists stockists;
     
     // Getter method to return stockists as a String
-    @JsonProperty("stockist")
+    @JsonProperty("stockists")
     public String getStockistsAsString() {
         if (stockists != null) {
             return String.valueOf(stockists.getStockistId());
