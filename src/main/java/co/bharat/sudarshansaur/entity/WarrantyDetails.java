@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import co.bharat.sudarshansaur.enums.AllocationStatus;
@@ -74,23 +75,47 @@ public class WarrantyDetails {
 	
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "stockist_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
-    @JsonIdentityReference(alwaysAsId = true)
+    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
+    //@JsonIdentityReference(alwaysAsId = true)
 	private Stockists stockists;
+    
+    @JsonValue
+    public String getStockistIdAsString() {
+        if (stockists != null) {
+            return String.valueOf(stockists.getStockistId());
+        }
+        return null; // Or an appropriate default value if stockists is null
+    }
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dealer_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dealerId")
-    @JsonIdentityReference(alwaysAsId = true)
+    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dealerId")
+    //@JsonIdentityReference(alwaysAsId = true)
     //@JsonBackReference("dealers-warranty")
 	private Dealers dealers;
 	
+    @JsonValue
+    public String getDealerIddAsString() {
+        if (dealers != null) {
+            return String.valueOf(dealers.getDealerId());
+        }
+        return null; // Or an appropriate default value if stockists is null
+    }
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
-    @JsonIdentityReference(alwaysAsId = true)
+    //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
+    //@JsonIdentityReference(alwaysAsId = true)
     //@JsonBackReference("customer-warranty")
 	private Customers customer;
+    
+    @JsonValue
+    public String getCustomerIdAsString() {
+        if (customer != null) {
+            return String.valueOf(customer.getCustomerId());
+        }
+        return null; // Or an appropriate default value if stockists is null
+    }
     
     @Enumerated(EnumType.STRING)
     private AllocationStatus allocationStatus;
