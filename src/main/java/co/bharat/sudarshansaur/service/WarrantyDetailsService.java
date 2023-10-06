@@ -79,7 +79,7 @@ public class WarrantyDetailsService {
 	private WarrantyDetailsDTO convertToDTO(WarrantyDetails warrantyDetails) {
 		WarrantyDetailsDTO dto = new WarrantyDetailsDTO();
 		BeanUtils.copyProperties(warrantyDetails, dto);
-		dto.setCustomer(warrantyDetails.getCustomer().getCustomerId());
+		dto.setCustomer(warrantyDetails.getCustomer());
 		return dto;
 	}
 
@@ -127,48 +127,48 @@ public class WarrantyDetailsService {
 					});
 			parsedWarrantyDetail = validateAndGetWarrantyDetailsFromCRM(warrantyDetailsRequests);
 			parsedWarrantyDetail.setAllocationStatus(warrantyDetailsRequests.getAllocationStatus());
-			if(warrantyDetailsRequests.getStockists()==null) {
-				Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
-				if (stockist == null) {
-					Stockists newStockist = stockistsRepository
-							.save(Stockists.builder().email(parsedWarrantyDetail.getCrmStockistEmail())
-									.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
-									.stockistName(parsedWarrantyDetail.getCrmStockistName())
-									.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
-									.status(UserStatus.CREATED).build());
-					parsedWarrantyDetail.setStockists(newStockist);
-	
-				} else {
-					parsedWarrantyDetail.setStockists(stockist);
-				}
-			} else {
-				parsedWarrantyDetail.setStockists(warrantyDetailsRequests.getStockists());
-			}
+//			if(warrantyDetailsRequests.getStockists()==null) {
+//				Stockists stockist = stockistsRepository.findByMobileNo(parsedWarrantyDetail.getCrmStockistMobileNo());
+//				if (stockist == null) {
+//					Stockists newStockist = stockistsRepository
+//							.save(Stockists.builder().email(parsedWarrantyDetail.getCrmStockistEmail())
+//									.mobileNo(parsedWarrantyDetail.getCrmStockistMobileNo())
+//									.stockistName(parsedWarrantyDetail.getCrmStockistName())
+////									.password(base64Encode(parsedWarrantyDetail.getCrmStockistMobileNo()))
+//									.status(UserStatus.CREATED).build());
+//					parsedWarrantyDetail.setStockists(newStockist);
+//
+//				} else {
+//					parsedWarrantyDetail.setStockists(stockist);
+//				}
+//			} else {
+//				parsedWarrantyDetail.setStockists(warrantyDetailsRequests.getStockists());
+//			}
 		}
-		if (warrantyDetailsRequests.getDealers() != null) {
-			parsedWarrantyDetail
-					.setDealers(dealersRepository.findById(warrantyDetailsRequests.getDealers().getDealerId())
-							.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
-			// Add the customer if not present already(customerId will not be present)
-			if (warrantyDetailsRequests.getCustomer() == null) {
-				if(parsedWarrantyDetail.getCrmCustomerMobileNo()!=null) {
-					Customers cust = Customers.builder().mobileNo(parsedWarrantyDetail.getCrmCustomerMobileNo())
-							//.password(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()))
-							.customerName(parsedWarrantyDetail.getCrmCustomerName()).build();
-					Customers newCustomer = customersRepository.save(cust);
-					parsedWarrantyDetail.setCustomer(newCustomer);
-				}
-			} else if (warrantyDetailsRequests.getCustomer().getCustomerId() == 0){
-				warrantyDetailsRequests.getCustomer();
-				//.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
-				Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
-				parsedWarrantyDetail.setCustomer(newCustomer);
-			} else {
-				parsedWarrantyDetail
-						.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
-								.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
-			}
-		}
+//		if (warrantyDetailsRequests.getDealers() != null) {
+//			parsedWarrantyDetail
+//					.setDealers(dealersRepository.findById(warrantyDetailsRequests.getDealers().getDealerId())
+//							.orElseThrow(() -> new EntityNotFoundException("No Dealer Found")));
+//			// Add the customer if not present already(customerId will not be present)
+//			if (warrantyDetailsRequests.getCustomer() == null) {
+//				if(parsedWarrantyDetail.getCrmCustomerMobileNo()!=null) {
+//					Customers cust = Customers.builder().mobileNo(parsedWarrantyDetail.getCrmCustomerMobileNo())
+//							//.password(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()))
+//							.customerName(parsedWarrantyDetail.getCrmCustomerName()).build();
+//					Customers newCustomer = customersRepository.save(cust);
+//					parsedWarrantyDetail.setCustomer(newCustomer);
+//				}
+//			} else if (warrantyDetailsRequests.getCustomer().getCustomerId() == 0){
+//				warrantyDetailsRequests.getCustomer();
+//				//.setPassword(base64Encode(parsedWarrantyDetail.getCrmCustomerMobileNo()));
+//				Customers newCustomer = customersRepository.save(warrantyDetailsRequests.getCustomer());
+//				parsedWarrantyDetail.setCustomer(newCustomer);
+//			} else {
+//				parsedWarrantyDetail
+//						.setCustomer(customersRepository.findById(warrantyDetailsRequests.getCustomer().getCustomerId())
+//								.orElseThrow(() -> new EntityNotFoundException("No Customer Found")));
+//			}
+//		}
 		WarrantyDetails newWarrantyDetails = warrantyDetailsRepository.save(parsedWarrantyDetail);
 		return newWarrantyDetails;
 
@@ -269,19 +269,19 @@ public class WarrantyDetailsService {
 		if (externalWarrantyDetailsDTOList.isEmpty()) {
 			throw new EntityNotFoundException("Warranties for this Mobile No is not found in CRM");
 		}
-		List<WarrantyDetails> internalWarrantyList = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, null)
-				.getContent();
-		if (!internalWarrantyList.isEmpty()) {
-			//Get all the serialNos in a Map
-			Map<String, WarrantyDetails> map2 = internalWarrantyList.stream()
-					.collect(Collectors.toMap(WarrantyDetails::getWarrantySerialNo, wd -> wd));
-			//Filter out serialNos present in existing DB
-			List<ExternalWarrantyDetailsDTO> differenceList = externalWarrantyDetailsDTOList.stream()
-	                .filter(wd -> !map2.containsKey(wd.getWarrantySerialNo()))
-	                .collect(Collectors.toList());
-			return convertToDTOListExternal(differenceList);
-
-		}
+//		List<WarrantyDetails> internalWarrantyList = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, null)
+//				.getContent();
+//		if (!internalWarrantyList.isEmpty()) {
+//			//Get all the serialNos in a Map
+//			Map<String, WarrantyDetails> map2 = internalWarrantyList.stream()
+//					.collect(Collectors.toMap(WarrantyDetails::getWarrantySerialNo, wd -> wd));
+//			//Filter out serialNos present in existing DB
+//			List<ExternalWarrantyDetailsDTO> differenceList = externalWarrantyDetailsDTOList.stream()
+//	                .filter(wd -> !map2.containsKey(wd.getWarrantySerialNo()))
+//	                .collect(Collectors.toList());
+//			return convertToDTOListExternal(differenceList);
+//
+//		}
 		return convertToDTOListExternal(externalWarrantyDetailsDTOList);
 	}
 }
