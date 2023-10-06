@@ -40,8 +40,6 @@ public class Stockists implements Users {
 
 	private String stockistName;
 
-	private String password;
-	
 	@Column(unique = true)
 	private String mobileNo;
 
@@ -73,14 +71,11 @@ public class Stockists implements Users {
 
 	private String image;
 
-	private String businessAddress;
-
 	private String businessName;
 
 	private String gstNumber;
-	
-	@OneToMany(mappedBy = "stockists", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference("dealers-stockists")
-	private List<Dealers> dealers;
+
+	@Column(unique = true)
+	private String stockistCode;
 
 }

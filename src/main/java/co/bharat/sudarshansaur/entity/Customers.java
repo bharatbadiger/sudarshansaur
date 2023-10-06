@@ -35,9 +35,7 @@ public class Customers implements Users{
 	private long customerId;
 
 	private String customerName;
-	
-	//private String password;
-	
+
 	@Column(unique = true)
 	private String mobileNo;
 

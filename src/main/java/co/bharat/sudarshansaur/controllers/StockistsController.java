@@ -44,13 +44,13 @@ public class StockistsController {
 				HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
 	}
 
-	@PostMapping(value = { "/authenticate" })
-	public ResponseEntity<ResponseData<StockistsResponseDTO>> authenticateCustomer(@Validated @RequestBody Stockists stockists) {
-		StockistsResponseDTO stockist = stockistsService.findByEmailAndPassword(stockists);
-		return new ResponseEntity<>(
-				new ResponseData<StockistsResponseDTO>("Stockist Fetched Successfully", HttpStatus.OK.value(), stockist, null),
-				HttpStatus.OK);
-	}
+//	@PostMapping(value = { "/authenticate" })
+//	public ResponseEntity<ResponseData<StockistsResponseDTO>> authenticateCustomer(@Validated @RequestBody Stockists stockists) {
+//		StockistsResponseDTO stockist = stockistsService.findByEmailAndPassword(stockists);
+//		return new ResponseEntity<>(
+//				new ResponseData<StockistsResponseDTO>("Stockist Fetched Successfully", HttpStatus.OK.value(), stockist, null),
+//				HttpStatus.OK);
+//	}
 
 	@GetMapping
 	public ResponseEntity<ResponseData<List<StockistsResponseDTO>>> getStockistsByAttributes(

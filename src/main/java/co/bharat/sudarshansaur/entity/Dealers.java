@@ -39,8 +39,6 @@ public class Dealers implements Users {
 
 	private String dealerName;
 
-	private String password;
-	
 	@Column(unique = true)
 	private String mobileNo;
 
@@ -69,24 +67,12 @@ public class Dealers implements Users {
 	private Date lastLogin;
 	
 	private String image;
-	
-	private String businessAddress;
-	
+
 	private String businessName;
 	
 	private String gstNumber;
-	
-	@ManyToOne
-	@JoinColumn(name="stockist_id")
-	@JsonBackReference("dealers-stockists")
-	private Stockists stockists;
-	
-	/*
-	 * @OneToMany(mappedBy = "dealers", cascade = CascadeType.ALL, fetch =
-	 * FetchType.LAZY)
-	 * 
-	 * @JsonManagedReference("dealers-warranty") private List<WarrantyDetails>
-	 * warrantyDetails;
-	 */
+
+	private String stockistCode;
+
 
 }

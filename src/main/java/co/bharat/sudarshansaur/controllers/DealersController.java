@@ -43,13 +43,13 @@ public class DealersController {
 				HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
 	}
 
-	@PostMapping(value = { "/authenticate" })
-	public ResponseEntity<ResponseData<DealersResponseDTO>> authenticateCustomer(
-			@Validated @RequestBody Dealers dealers) {
-		DealersResponseDTO dealer = dealersService.findByEmailAndPassword(dealers);
-		return new ResponseEntity<>(new ResponseData<DealersResponseDTO>("Dealer Fetched Successfully",
-				HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
-	}
+//	@PostMapping(value = { "/authenticate" })
+//	public ResponseEntity<ResponseData<DealersResponseDTO>> authenticateCustomer(
+//			@Validated @RequestBody Dealers dealers) {
+//		DealersResponseDTO dealer = dealersService.findByEmailAndPassword(dealers);
+//		return new ResponseEntity<>(new ResponseData<DealersResponseDTO>("Dealer Fetched Successfully",
+//				HttpStatus.OK.value(), dealer, null), HttpStatus.OK);
+//	}
 
 	@GetMapping
 	public ResponseEntity<ResponseData<List<DealersResponseDTO>>> getDealersByAttributes(

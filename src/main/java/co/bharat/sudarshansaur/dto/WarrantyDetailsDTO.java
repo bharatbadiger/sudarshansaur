@@ -37,14 +37,14 @@ public class WarrantyDetailsDTO {
 	
 	private String billNo;
 	
-	private Long dealer;
+	private String dealer;
 	
-	private Long stockist;
+	private String stockist;
 	
 	private String state;
 	
 	private String description;
 	
-	private Long customer;
+	private String customer;
 	
 }

@@ -72,8 +72,8 @@ public class DealersService {
 		return dealersList.stream().map(this::convertToDTO).collect(Collectors.toList());
 	}
 	
-	public DealersResponseDTO findByEmailAndPassword(Dealers dealer) {
-		return convertToDTO(dealersRepository.findByEmailAndPassword(dealer.getEmail(), dealer.getPassword())
-				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
-	}
+//	public DealersResponseDTO findByEmail(Dealers dealer) {
+//		return convertToDTO(dealersRepository.findByEmail(dealer.getEmail())
+//				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
+//	}
 }
