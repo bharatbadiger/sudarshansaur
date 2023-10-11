@@ -150,6 +150,8 @@ public class WarrantyRequests {
 	private boolean photoChecked;
 	
 	private boolean otherInfoChecked;
+
+	private boolean paymentDone;
 	
 	@Column(length = 40)
 	private String verifiedBy;

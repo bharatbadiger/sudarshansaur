@@ -85,4 +85,6 @@ public class WarrantyRequestsDTO {
 	
 	private String verifiedDate;
 
+	private boolean paymentDone;
+
 }

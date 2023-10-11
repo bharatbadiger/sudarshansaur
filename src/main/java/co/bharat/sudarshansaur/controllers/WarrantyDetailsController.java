@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import co.bharat.sudarshansaur.repository.StockistsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +47,9 @@ public class WarrantyDetailsController {
 	private WarrantyDetailsService warrantyDetailsService;
 	@Autowired
 	private CustomersRepository customersRepository;
+
+	@Autowired
+	private StockistsRepository stockistsRepository;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<WarrantyDetails>> getWarrantyDetail(@PathVariable String id) {
@@ -85,30 +89,30 @@ public class WarrantyDetailsController {
 				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = { "customer/{id}" })
-	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForCustomer(@PathVariable Long id) {
-		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByCustomerCustomerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
-		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
-		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
-	}
+//	@GetMapping(value = { "customer/{id}" })
+//	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForCustomer(@PathVariable Long id) {
+//		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByCustomerCustomerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+//		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
+//		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+//				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
+//	}
 	
-	@GetMapping(value = { "dealer/{id}" })
-	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForDealer(@PathVariable Long id) {
-		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByDealersDealerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
-		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
-		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
-	}
+//	@GetMapping(value = { "dealer/{id}" })
+//	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForDealer(@PathVariable Long id) {
+//		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByDealersDealerId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+//		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->!AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
+//		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+//				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
+//	}
 	
-	@GetMapping(value = { "stockist/{id}" })
-	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForStockist(@PathVariable Long id) {
-		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByStockistsStockistId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
-		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
-		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
-				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
-	}
-	
+//	@GetMapping(value = { "stockist/{id}" })
+//	public ResponseEntity<ResponseData<List<WarrantyDetails>>> getWarrantyDetailsForStockist(@PathVariable Long id) {
+//		List<WarrantyDetails> warrantyRequests1 = warrantyDetailsRepository.findByStockistsStockistId(id).orElseThrow(() -> new EntityNotFoundException("No WarrantyDetails Found"));
+//		List<WarrantyDetails> warrantyRequestsFiltered = warrantyRequests1.stream().filter(warranty->AllocationStatus.ALLOCATED.equals(warranty.getAllocationStatus())).collect(Collectors.toList());
+//		return new ResponseEntity<>(new ResponseData<List<WarrantyDetails>>("WarrantyDetails Fetched Successfully",
+//				HttpStatus.OK.value(), warrantyRequestsFiltered, null), HttpStatus.OK);
+//	}
+//
 	@GetMapping(value = { "stockist/mobileNo/{mobileNo}" })
 	public ResponseEntity<ResponseData<?>> getWarrantyDetailsForStockistByMobileNo(@RequestParam(defaultValue = "0", name = "pageNumber", required = false) int pageNumber,
 	        @RequestParam(name = "pageSize", required = false) Integer pageSize, @PathVariable String mobileNo) {
@@ -120,12 +124,12 @@ public class WarrantyDetailsController {
 			pageable = PageRequest.of(pageNumber, pageSize, sort);
 		}
 		Page<WarrantyDetails> pageResult;
-		pageResult = warrantyDetailsRepository.findByStockistsMobileNo(mobileNo, pageable);
+//		pageResult = stockistsRepository.findByStockistsMobileNo(mobileNo, pageable);
 		Map<String, Object> response = new HashMap<>();
-	    response.put("warrantyDetails", pageResult.getContent());
-	    response.put("currentPage", pageResult.getNumber());
-	    response.put("totalItems", pageResult.getTotalElements());
-	    response.put("totalPages", pageResult.getTotalPages());
+//	    response.put("warrantyDetails", pageResult.getContent());
+//	    response.put("currentPage", pageResult.getNumber());
+//	    response.put("totalItems", pageResult.getTotalElements());
+//	    response.put("totalPages", pageResult.getTotalPages());
 		return new ResponseEntity<>(new ResponseData<>("WarrantyDetails Fetched Successfully",
 				HttpStatus.OK.value(), response, null), HttpStatus.OK);
 	}
@@ -184,13 +188,13 @@ public class WarrantyDetailsController {
 	@PutMapping(value = { "/", "/{id}" })
 	public ResponseEntity<ResponseData<?>> updateWarrantyDetail(@PathVariable(required = false) String id,
 			@RequestBody WarrantyDetails warrantyDetail) {
-		if (warrantyDetail.getCustomer() != null && warrantyDetail.getCustomer().getCustomerId() > 0) {
-			Optional<Customers> customerDetails = customersRepository
-					.findById(warrantyDetail.getCustomer().getCustomerId());
-			if (customerDetails.isPresent()) {
-				warrantyDetail.setCustomer(customerDetails.get());
-			}
-		}
+//		if (warrantyDetail.getCustomer() != null) {
+//			Optional<Customers> customerDetails = customersRepository
+//					.findById(warrantyDetail.getCustomer().getCustomerId());
+//			if (customerDetails.isPresent()) {
+//				warrantyDetail.setCustomer(customerDetails.get());
+//			}
+//		}
 		WarrantyDetails updatedWarrantyDetails = warrantyDetailsService.updateWarrantyDetail(id, warrantyDetail);
 		return new ResponseEntity<>(
 				new ResponseData<>("WarrantyDetail Updated Successfully", HttpStatus.OK.value(), updatedWarrantyDetails, null),

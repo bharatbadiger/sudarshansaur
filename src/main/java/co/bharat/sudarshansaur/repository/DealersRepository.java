@@ -21,6 +21,6 @@ public interface DealersRepository extends JpaRepository<Dealers,Long>{
 
 	List<Dealers> findByStatus(UserStatus status);
 	
-	Optional<Dealers> findByEmailAndPassword(String email, String password);
+//	Optional<Dealers> findByEmailAndPassword(String email, String password);
 
 }

@@ -72,54 +72,7 @@ public class WarrantyDetails {
 	private String state;
 	
 	private String description;
-	
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "stockist_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "stockistId")
-    @JsonIdentityReference(alwaysAsId = true)
-	private Stockists stockists;
-    
-    // Getter method to return stockists as a String
-    @JsonProperty("stockists")
-    public String getStockistsAsString() {
-        if (stockists != null) {
-            return String.valueOf(stockists.getStockistId());
-        }
-        return null; // Or an appropriate default value if stockists is null
-    }
-    
-	/*
-	 * @JsonValue public String getStockistIdAsString() { if (stockists != null) {
-	 * return String.valueOf(stockists.getStockistId()); } return null; // Or an
-	 * appropriate default value if stockists is null }
-	 */
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dealer_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dealerId")
-    @JsonIdentityReference(alwaysAsId = true)
-    //@JsonBackReference("dealers-warranty")
-	private Dealers dealers;
-	
-	/*
-	 * @JsonValue public String getDealerIddAsString() { if (dealers != null) {
-	 * return String.valueOf(dealers.getDealerId()); } return null; // Or an
-	 * appropriate default value if stockists is null }
-	 */
-    
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
-    @JsonIdentityReference(alwaysAsId = true)
-    //@JsonBackReference("customer-warranty")
-	private Customers customer;
-    
-	/*
-	 * @JsonValue public String getCustomerIdAsString() { if (customer != null) {
-	 * return String.valueOf(customer.getCustomerId()); } return null; // Or an
-	 * appropriate default value if stockists is null }
-	 */
-    
+
     @Enumerated(EnumType.STRING)
     private AllocationStatus allocationStatus;
     
@@ -147,5 +100,9 @@ public class WarrantyDetails {
 	private String approvedBy;
 	
 	private String crmStockistDistrict;
-	
+
+	private String stockists;
+	private String dealers;
+	private String customer;
+
 }

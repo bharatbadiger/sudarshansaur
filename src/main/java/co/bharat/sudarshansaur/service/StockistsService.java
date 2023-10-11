@@ -75,8 +75,8 @@ public class StockistsService {
 		return stockistsList.stream().map(this::convertToDTO).collect(Collectors.toList());
 	}
 
-	public StockistsResponseDTO findByEmailAndPassword(Stockists stockist) {
-		return convertToDTO(stockistsRepository.findByEmailAndPassword(stockist.getEmail(), stockist.getPassword())
-				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
-	}
+//	public StockistsResponseDTO findByEmailAndPassword(Stockists stockist) {
+//		return convertToDTO(stockistsRepository.findByEmailAndPassword(stockist.getEmail(), stockist.getPassword())
+//				.orElseThrow(() -> new EntityNotFoundException("Incorrect email and password")));
+//	}
 }
