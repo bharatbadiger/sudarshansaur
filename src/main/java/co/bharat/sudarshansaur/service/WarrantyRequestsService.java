@@ -1,17 +1,20 @@
 package co.bharat.sudarshansaur.service;
 
-import java.beans.PropertyDescriptor;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-
+import co.bharat.sudarshansaur.dto.AnswersDTO;
+import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
+import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsResultWrapper;
+import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
+import co.bharat.sudarshansaur.entity.Answers;
+import co.bharat.sudarshansaur.entity.WarrantyDetails;
+import co.bharat.sudarshansaur.entity.WarrantyRequests;
+import co.bharat.sudarshansaur.enums.AllocationStatus;
+import co.bharat.sudarshansaur.enums.UserType;
+import co.bharat.sudarshansaur.repository.CustomersRepository;
+import co.bharat.sudarshansaur.repository.QuestionsRepository;
+import co.bharat.sudarshansaur.repository.StockistsRepository;
+import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -26,23 +29,16 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import co.bharat.sudarshansaur.dto.AnswersDTO;
-import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
-import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsResultWrapper;
-import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
-import co.bharat.sudarshansaur.entity.Answers;
-import co.bharat.sudarshansaur.entity.Stockists;
-import co.bharat.sudarshansaur.entity.WarrantyDetails;
-import co.bharat.sudarshansaur.entity.WarrantyRequests;
-import co.bharat.sudarshansaur.enums.AllocationStatus;
-import co.bharat.sudarshansaur.enums.UserType;
-import co.bharat.sudarshansaur.repository.CustomersRepository;
-import co.bharat.sudarshansaur.repository.QuestionsRepository;
-import co.bharat.sudarshansaur.repository.StockistsRepository;
-import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+import java.beans.PropertyDescriptor;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WarrantyRequestsService {
@@ -214,6 +210,10 @@ public class WarrantyRequestsService {
 		WarrantyRequests existingWarrantyRequests = warrantyRequestsRepository.findById(requestId).orElseThrow(() -> new EntityNotFoundException("No Warranty Request found with the given id"));
 		WarrantyRequests updatedWarrantyRequests = convertFromDTO(warrantyRequestsDTO);
 		BeanUtils.copyProperties(updatedWarrantyRequests, existingWarrantyRequests, getNullPropertyNames(updatedWarrantyRequests));
+		if(warrantyRequestsDTO.getAnswers() != null) {
+			List<Answers> answersList = convertFromDTOListAnswers(warrantyRequestsDTO.getAnswers(), warrantyRequestsDTO);
+			existingWarrantyRequests.setAnswers(answersList);
+		}
 		warrantyRequestsRepository.save(existingWarrantyRequests);
 		return existingWarrantyRequests;
 	}
