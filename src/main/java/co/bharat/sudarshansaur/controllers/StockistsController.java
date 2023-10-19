@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import co.bharat.sudarshansaur.dto.ExternalStockistsDetailsDTO;
+import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsResultWrapper;
 import co.bharat.sudarshansaur.dto.ResponseData;
 import co.bharat.sudarshansaur.dto.StockistsResponseDTO;
 import co.bharat.sudarshansaur.entity.Stockists;
@@ -58,7 +65,7 @@ public class StockistsController {
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "status", required = false) UserStatus status) {
 
-		List<Stockists> stockistsList = new ArrayList<>();;
+		List<Stockists> stockistsList = new ArrayList<>();
 
 		if (mobileNo != null && email != null && status != null) {
 			stockistsList.add(stockistRepository.findByMobileNoAndEmailAndStatus(mobileNo, email, status));
@@ -80,6 +87,25 @@ public class StockistsController {
 		}
 		return new ResponseEntity<>(new ResponseData<List<StockistsResponseDTO>>("Stockists Fetched Successfully",
 				HttpStatus.OK.value(), stockistsService.convertToDTOList(stockistsList), null), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = { "/crm" })
+	public ResponseEntity<ResponseData<List<ExternalStockistsDetailsDTO>>> getStockistsByCodeAndNumber(
+			@RequestParam(name = "dealer_code", required = false) String dealerCode,
+			@RequestParam(name = "mobile_number", required = false) String mobileNo) {
+		
+		List<ExternalStockistsDetailsDTO> externalStockistDTOList = new ArrayList<>();;
+		if(mobileNo!=null && dealerCode != null) {
+			externalStockistDTOList = stockistsService.getStockistByDealerCodeAndMobileNo(dealerCode, mobileNo);
+		} else if (mobileNo==null && dealerCode != null) {
+			externalStockistDTOList = stockistsService.getStockistByDealerCode(dealerCode);
+		}
+		if (externalStockistDTOList.isEmpty()) {
+			return new ResponseEntity<>(new ResponseData<List<ExternalStockistsDetailsDTO>>("Stockist Not Found",
+					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(new ResponseData<List<ExternalStockistsDetailsDTO>>("Stockists Fetched Successfully",
+				HttpStatus.OK.value(), externalStockistDTOList, null), HttpStatus.OK);
 	}
 
 	@PostMapping(value = { "/many" })

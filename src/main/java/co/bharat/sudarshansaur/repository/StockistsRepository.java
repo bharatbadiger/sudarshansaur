@@ -21,6 +21,8 @@ public interface StockistsRepository extends JpaRepository<Stockists,Long>{
 
 	List<Stockists> findByStatus(UserStatus status);
 	
+	Optional<Stockists> findByStockistCode(String stockistCode);
+	
 //	Optional<Stockists> findByEmailAndPassword(String email, String password);
 
 }
