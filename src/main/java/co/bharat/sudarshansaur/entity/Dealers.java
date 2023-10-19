@@ -3,18 +3,7 @@ package co.bharat.sudarshansaur.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -57,7 +46,7 @@ public class Dealers implements Users {
     	createdOn = new Date();
     	updatedOn = createdOn;
     }
-	
+
 	private Date updatedOn;
     @PreUpdate
     protected void onUpdate() {
@@ -73,6 +62,12 @@ public class Dealers implements Users {
 	private String gstNumber;
 
 	private String stockistCode;
+
+	private String stockistBusinessName;
+//
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "stockist_id")
+//	private Stockists stockist;
 
 
 }
