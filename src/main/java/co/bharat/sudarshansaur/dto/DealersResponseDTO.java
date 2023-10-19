@@ -37,13 +37,15 @@ public class DealersResponseDTO implements Users {
 	private Date lastLogin;
 	
 	private String image;
-	
-	private String businessAddress;
-	
+
 	private String businessName;
 	
 	private String gstNumber;
-	
+
+	private String stockistCode;
+
+	private String stockistBusinessName;
+
 	private Stockists stockists;
 
 }

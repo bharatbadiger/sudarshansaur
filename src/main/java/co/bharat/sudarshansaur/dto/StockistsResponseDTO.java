@@ -22,8 +22,6 @@ public class StockistsResponseDTO implements Users{
 
 	private String stockistName;
 
-	//private String password;
-	
 	private String mobileNo;
 
 	private UserStatus status;
