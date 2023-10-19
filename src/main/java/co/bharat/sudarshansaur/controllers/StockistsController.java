@@ -104,7 +104,7 @@ public class StockistsController {
 			return new ResponseEntity<>(new ResponseData<List<ExternalStockistsDetailsDTO>>("Stockist Not Found",
 					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new ResponseData<List<ExternalStockistsDetailsDTO>>("Stockists Fetched Successfully",
+		return new ResponseEntity<>(new ResponseData<List<ExternalStockistsDetailsDTO>>("Stockist Found",
 				HttpStatus.OK.value(), externalStockistDTOList, null), HttpStatus.OK);
 	}
 

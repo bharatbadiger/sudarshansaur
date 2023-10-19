@@ -32,7 +32,7 @@ public class ExternalStockistsDetailsDTO {
 	private String salesExecutive;
 
 	@JsonProperty("Applicable To Lead")
-	private Date applicableToLead;
+	private String applicableToLead;
 	
 	@JsonProperty("Active")
 	private String active;
@@ -47,7 +47,7 @@ public class ExternalStockistsDetailsDTO {
 	private String description;
 	
 	@JsonProperty("Dealers Email")
-	private Date delaersEmail;	
+	private String delaersEmail;	
 	
 	@JsonProperty("State")
 	private String state;
