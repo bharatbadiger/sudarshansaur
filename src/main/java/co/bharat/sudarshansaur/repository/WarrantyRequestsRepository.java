@@ -25,7 +25,7 @@ public interface WarrantyRequestsRepository extends JpaRepository<WarrantyReques
     List<WarrantyRequests> findPendingWarrantyRequestsByCustomerId(long customerId);
 	
     // Define a custom query to select warrantySerialNo values
-    @Query("SELECT wr.warrantySerialNo FROM WarrantyRequest wr")
+    @Query("SELECT wr.warrantySerialNo FROM WarrantyRequests wr")
     List<String> findWarrantySerialNumbers();
 	
 }
