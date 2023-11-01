@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import co.bharat.sudarshansaur.dto.ExternalStockistWarrantyDetailsResultWrapper;
+import co.bharat.sudarshansaur.dto.ExternalStockistWarrantyDetailsResponse;
 import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
 import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.repository.StockistDealerWarrantyRepository;
@@ -61,9 +61,9 @@ public class StockistDealerWarrantyService {
 			String jsonResponse = response.getBody();
 			//System.out.println(jsonResponse);
 			ObjectMapper objectMapper = new ObjectMapper();
-			ExternalStockistWarrantyDetailsResultWrapper resultWrapper = objectMapper.readValue(jsonResponse,
-					ExternalStockistWarrantyDetailsResultWrapper.class);
-			externalWarrantyDetailsDTOList = resultWrapper.getSerial();
+			ExternalStockistWarrantyDetailsResponse resultWrapper = objectMapper.readValue(jsonResponse,
+					ExternalStockistWarrantyDetailsResponse.class);
+			externalWarrantyDetailsDTOList = resultWrapper.getResults().getSerial();
 		} catch (JsonProcessingException je) {
 			System.out.println("Error in parsing response!"+ je.getMessage());
 			throw new EntityNotFoundException("Warranties for this Mobile No is not found in CRM");
