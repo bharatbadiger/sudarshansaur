@@ -61,6 +61,13 @@ public class StockistDealerWarrantyController {
 				HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
 	}
 	
+	@GetMapping
+	public ResponseEntity<ResponseData<List<StockistDealerWarranty>>> getAllSDW() {
+		List<StockistDealerWarranty> stockist = sdwRepository.findAll();
+		return new ResponseEntity<>(new ResponseData<List<StockistDealerWarranty>>("Mappings Fetched Successfully",
+				HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = { "stockist/{id}" })
 	public ResponseEntity<ResponseData<List<WarrantyDealerMappingDTO>>> getSDWByStockist(@PathVariable Long id) {
 		List<StockistDealerWarranty> stockistWarrantyDtls = sdwRepository.findByStockistId(id).orElseThrow(() -> new EntityNotFoundException("No Mappings Found"));
