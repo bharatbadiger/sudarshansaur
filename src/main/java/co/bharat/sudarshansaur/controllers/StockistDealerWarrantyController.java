@@ -98,11 +98,11 @@ public class StockistDealerWarrantyController {
 		List<WarrantyStockistMappingDTO> result = new ArrayList<>();
 
 	    for (StockistDealerWarranty warranty : dealerWarrantyDtls) {
-	        long dealerId = warranty.getDealerId();
+	        long stockistId = warranty.getStockistId();
 	        String warrantySerialNo = warranty.getWarrantySerialNo();
 
 	        // Fetch the associated Dealers object based on dealerId
-	        Stockists stockist = stockistsRepository.findById(dealerId).orElse(null);
+	        Stockists stockist = stockistsRepository.findById(stockistId).orElse(null);
 
 	        if (stockist != null) {
 	            // Fetch the associated warrantyRequests object based on warrantySerialNo
@@ -129,13 +129,14 @@ public class StockistDealerWarrantyController {
 			return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Not Found",
 					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
 		}
-		
+		System.out.println("Count of Serial Nos present before: " + externalWarrantyDetailList.size());
 		// Retrieve the list of warrantySerialNo values from warrantyRequests
 	    List<String> warrantySerialNumbers = getWarrantySerialNumbersFromWarrantyRequests();
+	    System.out.println("List of Serial Nos present: " + warrantySerialNumbers);
 	    // Filter externalWarrantyDetailList to exclude items with warrantySerialNo in warrantyRequests
-	    externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
-
-
+	    //externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
+	    externalWarrantyDetailList.stream().filter((e)-> !warrantySerialNumbers.contains(e.getWarrantySerialNo())).collect(Collectors.toList());
+	    System.out.println("Count of Serial Nos present after: " + externalWarrantyDetailList.size());
 	    if (externalWarrantyDetailList.isEmpty()) {
 	        return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Not Found in warrantyRequests",
 	                HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
