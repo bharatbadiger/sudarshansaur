@@ -131,7 +131,8 @@ public class StockistDealerWarrantyController {
 		}
 		System.out.println("Count of Serial Nos present before: " + externalWarrantyDetailList.size());
 		// Retrieve the list of warrantySerialNo values from warrantyRequests
-	    List<String> warrantySerialNumbers = getWarrantySerialNumbersFromWarrantyRequests();
+	    List<String> warrantySerialNumbers = sdwRepository.findAll().stream().map(sdw -> sdw.getWarrantySerialNo()).collect(Collectors
+	    		.toList());
 	    System.out.println("List of Serial Nos present: " + warrantySerialNumbers);
 	    // Filter externalWarrantyDetailList to exclude items with warrantySerialNo in warrantyRequests
 	    //externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
