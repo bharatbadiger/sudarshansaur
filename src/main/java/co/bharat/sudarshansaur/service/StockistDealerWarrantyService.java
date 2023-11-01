@@ -43,11 +43,13 @@ public class StockistDealerWarrantyService {
 
 	private WarrantyDetailsDTO convertToDTOExternal(ExternalWarrantyDetailsDTO warrantyDetails) {
 		WarrantyDetailsDTO dto = new WarrantyDetailsDTO();
+		dto.setGuranteePeriod(warrantyDetails.getGuaranteePeriod());
+		//dto.
 		BeanUtils.copyProperties(warrantyDetails, dto);
 		return dto;
 	}
 	
-	public List<ExternalWarrantyDetailsDTO> findWarrantyDetailsByStockistCodeFromCRM(String stockistCode, String mobileNo) {
+	public List<WarrantyDetailsDTO> findWarrantyDetailsByStockistCodeFromCRM(String stockistCode, String mobileNo) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
@@ -71,6 +73,6 @@ public class StockistDealerWarrantyService {
 		if (externalWarrantyDetailsDTOList.isEmpty()) {
 			throw new EntityNotFoundException("Warranties for this Mobile No is not found in CRM");
 		}
-		return externalWarrantyDetailsDTOList;
+		return convertToDTOListExternal(externalWarrantyDetailsDTOList);
 	}
 }

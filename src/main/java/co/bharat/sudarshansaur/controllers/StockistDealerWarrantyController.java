@@ -58,19 +58,19 @@ public class StockistDealerWarrantyController {
 	}
 
 	@GetMapping(value = { "/crm" })
-	public ResponseEntity<ResponseData<List<ExternalWarrantyDetailsDTO>>> getWarrantyByStockistCode(
+	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyByStockistCode(
 			@RequestParam(name = "dealer_code", required = false) String dealerCode,
 			@RequestParam(name = "mobile_number", required = false) String mobileNo) {
 		
-		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailList = new ArrayList<>();;
+		List<WarrantyDetailsDTO> externalWarrantyDetailList = new ArrayList<>();;
 		if(mobileNo!=null && dealerCode != null) {
 			externalWarrantyDetailList = sdwService.findWarrantyDetailsByStockistCodeFromCRM(dealerCode, mobileNo);
 		}
 		if (externalWarrantyDetailList.isEmpty()) {
-			return new ResponseEntity<>(new ResponseData<List<ExternalWarrantyDetailsDTO>>("Mapping Not Found",
+			return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Not Found",
 					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new ResponseData<List<ExternalWarrantyDetailsDTO>>("Mapping Found",
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Found",
 				HttpStatus.OK.value(), externalWarrantyDetailList, null), HttpStatus.OK);
 	}
 
