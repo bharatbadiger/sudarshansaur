@@ -135,8 +135,8 @@ public class StockistDealerWarrantyController {
 	    		.toList());
 	    System.out.println("List of Serial Nos present: " + warrantySerialNumbers);
 	    // Filter externalWarrantyDetailList to exclude items with warrantySerialNo in warrantyRequests
-	    //externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
-	    externalWarrantyDetailList.stream().filter((e)-> !warrantySerialNumbers.contains(e.getWarrantySerialNo())).collect(Collectors.toList());
+	    externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
+	    //externalWarrantyDetailList.stream().filter((e)-> !warrantySerialNumbers.contains(e.getWarrantySerialNo())).collect(Collectors.toList());
 	    System.out.println("Count of Serial Nos present after: " + externalWarrantyDetailList.size());
 	    if (externalWarrantyDetailList.isEmpty()) {
 	        return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Not Found in warrantyRequests",
