@@ -13,23 +13,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.bharat.sudarshansaur.dto.ExternalStockistsDetailsDTO;
+import co.bharat.sudarshansaur.dto.ExternalWarrantyDetailsDTO;
 import co.bharat.sudarshansaur.dto.ResponseData;
-import co.bharat.sudarshansaur.dto.StockistsResponseDTO;
 import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.StockistDealerWarranty;
-import co.bharat.sudarshansaur.entity.Stockists;
-import co.bharat.sudarshansaur.enums.UserStatus;
 import co.bharat.sudarshansaur.repository.StockistDealerWarrantyRepository;
-import co.bharat.sudarshansaur.repository.StockistsRepository;
 import co.bharat.sudarshansaur.service.StockistDealerWarrantyService;
-import co.bharat.sudarshansaur.service.StockistsService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -64,19 +58,19 @@ public class StockistDealerWarrantyController {
 	}
 
 	@GetMapping(value = { "/crm" })
-	public ResponseEntity<ResponseData<List<WarrantyDetailsDTO>>> getWarrantyByStockistCode(
+	public ResponseEntity<ResponseData<List<ExternalWarrantyDetailsDTO>>> getWarrantyByStockistCode(
 			@RequestParam(name = "dealer_code", required = false) String dealerCode,
 			@RequestParam(name = "mobile_number", required = false) String mobileNo) {
 		
-		List<WarrantyDetailsDTO> externalWarrantyDetailList = new ArrayList<>();;
+		List<ExternalWarrantyDetailsDTO> externalWarrantyDetailList = new ArrayList<>();;
 		if(mobileNo!=null && dealerCode != null) {
 			externalWarrantyDetailList = sdwService.findWarrantyDetailsByStockistCodeFromCRM(dealerCode, mobileNo);
 		}
 		if (externalWarrantyDetailList.isEmpty()) {
-			return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("Mapping Not Found",
+			return new ResponseEntity<>(new ResponseData<List<ExternalWarrantyDetailsDTO>>("Mapping Not Found",
 					HttpStatus.NOT_FOUND.value(), null, null), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(new ResponseData<List<WarrantyDetailsDTO>>("<Mapping Found",
+		return new ResponseEntity<>(new ResponseData<List<ExternalWarrantyDetailsDTO>>("Mapping Found",
 				HttpStatus.OK.value(), externalWarrantyDetailList, null), HttpStatus.OK);
 	}
 
