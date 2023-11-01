@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.bharat.sudarshansaur.dto.ResponseData;
+import co.bharat.sudarshansaur.dto.WarrantyDealerMappingDTO;
 import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
+import co.bharat.sudarshansaur.dto.WarrantyStockistMappingDTO;
 import co.bharat.sudarshansaur.entity.Dealers;
 import co.bharat.sudarshansaur.entity.StockistDealerWarranty;
+import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.entity.WarrantyRequests;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.repository.StockistDealerWarrantyRepository;
@@ -59,19 +62,51 @@ public class StockistDealerWarrantyController {
 	}
 	
 	@GetMapping(value = { "stockist/{id}" })
-	public ResponseEntity<ResponseData<List<StockistDealerWarranty>>> getSDWByStockist(@PathVariable Long id) {
-		List<StockistDealerWarranty> stockist = sdwRepository.findByStockistId(id).orElseThrow(() -> new EntityNotFoundException("No Mappings Found"));
-		List<Long> dealerIds = stockist.stream().map(StockistDealerWarranty::getDealerId).collect(Collectors.toList());
-		List<Dealers> dealers =  dealersRepository.findAllById(dealerIds);
-		return new ResponseEntity<>(new ResponseData<List<StockistDealerWarranty>>("Stockists Mapping Fetched Successfully",
-				HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<List<WarrantyDealerMappingDTO>>> getSDWByStockist(@PathVariable Long id) {
+		List<StockistDealerWarranty> stockistWarrantyDtls = sdwRepository.findByStockistId(id).orElseThrow(() -> new EntityNotFoundException("No Mappings Found"));
+	    List<WarrantyDealerMappingDTO> result = new ArrayList<>();
+
+	    for (StockistDealerWarranty warranty : stockistWarrantyDtls) {
+	        long dealerId = warranty.getDealerId();
+	        String warrantySerialNo = warranty.getWarrantySerialNo();
+
+	        // Fetch the associated Dealers object based on dealerId
+	        Dealers dealer = dealersRepository.findById(dealerId).orElse(null);
+
+	        if (dealer != null) {
+	            // Fetch the associated warrantyRequests object based on warrantySerialNo
+	            WarrantyRequests warrantyRequests = warrantyRequestsRepository.findByWarrantyDetailsWarrantySerialNo(warrantySerialNo).orElse(null);
+
+	            WarrantyDealerMappingDTO dto = new WarrantyDealerMappingDTO(dealer, warrantySerialNo, warrantyRequests);
+                result.add(dto);
+	        }
+	    }
+		return new ResponseEntity<>(new ResponseData<List<WarrantyDealerMappingDTO>>("Stockists Mapping Fetched Successfully",
+				HttpStatus.OK.value(), result, null), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = { "dealer/{id}" })
-	public ResponseEntity<ResponseData<List<StockistDealerWarranty>>> getSDWByDealer(@PathVariable Long id) {
-		List<StockistDealerWarranty> stockist = sdwRepository.findByDealerId(id).orElseThrow(() -> new EntityNotFoundException("No Mappings Found"));
-		return new ResponseEntity<>(new ResponseData<List<StockistDealerWarranty>>("Dealer Mapping Fetched Successfully",
-				HttpStatus.OK.value(), stockist, null), HttpStatus.OK);
+	public ResponseEntity<ResponseData<List<WarrantyStockistMappingDTO>>> getSDWByDealer(@PathVariable Long id) {
+		List<StockistDealerWarranty> dealerWarrantyDtls = sdwRepository.findByDealerId(id).orElseThrow(() -> new EntityNotFoundException("No Mappings Found"));
+		List<WarrantyStockistMappingDTO> result = new ArrayList<>();
+
+	    for (StockistDealerWarranty warranty : dealerWarrantyDtls) {
+	        long dealerId = warranty.getDealerId();
+	        String warrantySerialNo = warranty.getWarrantySerialNo();
+
+	        // Fetch the associated Dealers object based on dealerId
+	        Stockists stockist = stockistsRepository.findById(dealerId).orElse(null);
+
+	        if (stockist != null) {
+	            // Fetch the associated warrantyRequests object based on warrantySerialNo
+	            WarrantyRequests warrantyRequests = warrantyRequestsRepository.findByWarrantyDetailsWarrantySerialNo(warrantySerialNo).orElse(null);
+
+	            WarrantyStockistMappingDTO dto = new WarrantyStockistMappingDTO(stockist, warrantySerialNo, warrantyRequests);
+	            result.add(dto);
+	        }
+	    }
+		return new ResponseEntity<>(new ResponseData<List<WarrantyStockistMappingDTO>>("Dealer Mapping Fetched Successfully",
+				HttpStatus.OK.value(), result, null), HttpStatus.OK);
 	}
 
 	@GetMapping(value = { "/crm" })
