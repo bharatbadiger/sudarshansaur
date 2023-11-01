@@ -24,6 +24,7 @@ import co.bharat.sudarshansaur.dto.ResponseData;
 import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
 import co.bharat.sudarshansaur.entity.Dealers;
 import co.bharat.sudarshansaur.entity.StockistDealerWarranty;
+import co.bharat.sudarshansaur.entity.WarrantyRequests;
 import co.bharat.sudarshansaur.repository.DealersRepository;
 import co.bharat.sudarshansaur.repository.StockistDealerWarrantyRepository;
 import co.bharat.sudarshansaur.repository.StockistsRepository;
@@ -88,7 +89,7 @@ public class StockistDealerWarrantyController {
 		}
 		
 		// Retrieve the list of warrantySerialNo values from warrantyRequests
-	    List<String> warrantySerialNumbers = warrantyRequestsRepository.findWarrantySerialNumbers();
+	    List<String> warrantySerialNumbers = getWarrantySerialNumbersFromWarrantyRequests();
 	    // Filter externalWarrantyDetailList to exclude items with warrantySerialNo in warrantyRequests
 	    externalWarrantyDetailList.removeIf(dto -> warrantySerialNumbers.contains(dto.getWarrantySerialNo()));
 
@@ -135,4 +136,11 @@ public class StockistDealerWarrantyController {
 		sdwRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+    public List<String> getWarrantySerialNumbersFromWarrantyRequests() {
+        List<WarrantyRequests> warrantyRequests = warrantyRequestsRepository.findAll();
+        return warrantyRequests.stream()
+            .map(warrantyRequest -> warrantyRequest.getWarrantyDetails().getWarrantySerialNo())
+            .collect(Collectors.toList());
+    }
 }
