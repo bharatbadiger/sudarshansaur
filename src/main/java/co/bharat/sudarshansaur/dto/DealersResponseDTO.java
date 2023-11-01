@@ -46,6 +46,4 @@ public class DealersResponseDTO implements Users {
 
 	private String stockistBusinessName;
 
-	private Stockists stockists;
-
 }

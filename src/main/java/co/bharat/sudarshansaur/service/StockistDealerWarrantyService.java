@@ -41,11 +41,10 @@ public class StockistDealerWarrantyService {
 		return warrantyDetailsList.stream().map(this::convertToDTOExternal).collect(Collectors.toList());
 	}
 
-	private WarrantyDetailsDTO convertToDTOExternal(ExternalWarrantyDetailsDTO warrantyDetails) {
+	private WarrantyDetailsDTO convertToDTOExternal(ExternalWarrantyDetailsDTO extWarrantyDetails) {
 		WarrantyDetailsDTO dto = new WarrantyDetailsDTO();
-		dto.setGuranteePeriod(warrantyDetails.getGuaranteePeriod());
-		//dto.
-		BeanUtils.copyProperties(warrantyDetails, dto);
+		dto.setGuranteePeriod(extWarrantyDetails.getGuaranteePeriod());
+		BeanUtils.copyProperties(extWarrantyDetails, dto);
 		return dto;
 	}
 	

@@ -45,5 +45,7 @@ public class StockistsResponseDTO implements Users{
 	private String gstNumber;
 
 	private List<Dealers> dealers;
+	
+	private String stockistCode;
 
 }
