@@ -121,8 +121,8 @@ public class WarrantyRequestsService {
 				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Customer Found"));
 	}
 
-	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(long dealerId) {
-		return convertToDTOList(warrantyRequestsRepository.findByCustomersCustomerId(dealerId)
+	public List<WarrantyRequestsDTO> getAllWarrantyRequestsForDealer(String dealerId) {
+		return convertToDTOList(warrantyRequestsRepository.findByInitiatedBy(dealerId)
 				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequests for this Dealer Found")));
 	}
 

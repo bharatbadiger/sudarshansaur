@@ -19,6 +19,8 @@ public interface WarrantyRequestsRepository extends JpaRepository<WarrantyReques
 	
 	Optional<List<WarrantyRequests>> findByCustomersCustomerId(Long customerId);
 	
+	Optional<List<WarrantyRequests>> findByInitiatedBy(String initiatedBy);
+	
 	Optional<List<WarrantyRequests>> findByCustomersCustomerIdAndStatus(long customerId, AllocationStatus status);
 	
 	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.customers.customerId = :customerId AND wr.status = 'PENDING'")
