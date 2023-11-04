@@ -9,18 +9,23 @@ import com.lowagie.text.pdf.PdfWriter;
 import javax.servlet.http.HttpServletResponse;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class AgreementFactory {
-    public static void generateStockistAgreement(HttpServletResponse response, Stockists stockist) throws DocumentException, IOException {
+    public static InputStream generateStockistAgreement(Stockists stockist) throws DocumentException, IOException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, response.getOutputStream());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        PdfWriter.getInstance(document, out);
         document.open();
 
-        Font fontTiltle = FontFactory.getFont(FontFactory.COURIER_BOLD,  18, Font.UNDERLINE);
-        Font fontPara = FontFactory.getFont(FontFactory.COURIER,  12, Font.NORMAL);
-        Font fontParaBoldUnderline = FontFactory.getFont(FontFactory.COURIER_BOLD,  12, Font.UNDERLINE);
-        Font fontParaBold = FontFactory.getFont(FontFactory.COURIER_BOLD,  12, Font.NORMAL);
+        Font fontTiltle = FontFactory.getFont(FontFactory.COURIER_BOLD, 18, Font.UNDERLINE);
+        Font fontPara = FontFactory.getFont(FontFactory.COURIER, 12, Font.NORMAL);
+        Font fontParaBoldUnderline = FontFactory.getFont(FontFactory.COURIER_BOLD, 12, Font.UNDERLINE);
+        Font fontParaBold = FontFactory.getFont(FontFactory.COURIER_BOLD, 12, Font.NORMAL);
 
         document.add(new Phrase("\n\n\n\n\n\n\n\n\n\n\n\n\n\n"));
 
@@ -46,19 +51,23 @@ public class AgreementFactory {
         document.add(new Paragraph(StockistAgreementText.para7(stockist), fontPara));
         document.add(new Phrase("\n"));
         document.add(new Phrase("\n"));
-        document.add(new Paragraph("This is electronically generated does not require any signature and stamp.",fontPara));
+        document.add(new Paragraph("This is electronically generated does not require any signature and stamp.", fontPara));
         document.close();
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
-    public static void generateDealerAgreement(HttpServletResponse response, Dealers dealers) throws DocumentException, IOException {
+    public static InputStream generateDealerAgreement(HttpServletResponse response, Dealers dealers) throws DocumentException, IOException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, response.getOutputStream());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        PdfWriter.getInstance(document, out);
         document.open();
 
-        Font fontTiltle = FontFactory.getFont(FontFactory.COURIER_BOLD,  18, Font.UNDERLINE);
-        Font fontPara = FontFactory.getFont(FontFactory.COURIER,  12, Font.NORMAL);
-        Font fontParaBoldUnderline = FontFactory.getFont(FontFactory.COURIER_BOLD,  12, Font.UNDERLINE);
-        Font fontParaBold = FontFactory.getFont(FontFactory.COURIER_BOLD,  12, Font.NORMAL);
+        Font fontTiltle = FontFactory.getFont(FontFactory.COURIER_BOLD, 18, Font.UNDERLINE);
+        Font fontPara = FontFactory.getFont(FontFactory.COURIER, 12, Font.NORMAL);
+        Font fontParaBoldUnderline = FontFactory.getFont(FontFactory.COURIER_BOLD, 12, Font.UNDERLINE);
+        Font fontParaBold = FontFactory.getFont(FontFactory.COURIER_BOLD, 12, Font.NORMAL);
 
         document.add(new Phrase("\n\n\n\n\n\n\n\n\n\n\n\n\n\n"));
 
@@ -84,8 +93,9 @@ public class AgreementFactory {
         document.add(new Paragraph(DealerAgreementText.para7(dealers), fontPara));
         document.add(new Phrase("\n"));
         document.add(new Phrase("\n"));
-        document.add(new Paragraph("This is electronically generated does not require any signature and stamp.",fontPara));
+        document.add(new Paragraph("This is electronically generated does not require any signature and stamp.", fontPara));
         document.close();
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
 }

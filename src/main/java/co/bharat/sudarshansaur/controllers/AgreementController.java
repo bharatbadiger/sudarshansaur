@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +45,9 @@ public class AgreementController {
 		String headerkey = "Content-Disposition";
 		String headervalue = "attachment; filename=Agreement.pdf";
 		response.setHeader(headerkey, headervalue);
-		AgreementFactory.generateStockistAgreement(response,stockists);
+		InputStream pdf = AgreementFactory.generateStockistAgreement(stockists);
+		org.apache.commons.io.IOUtils.copy(pdf, response.getOutputStream());
+		response.flushBuffer();
 	}
 
 	@GetMapping(value = { "/dealer/{id}" })
@@ -61,7 +60,9 @@ public class AgreementController {
 		String headerkey = "Content-Disposition";
 		String headervalue = "attachment; filename=Agreement.pdf";
 		response.setHeader(headerkey, headervalue);
-		AgreementFactory.generateDealerAgreement(response,dealer);
+		InputStream pdf = AgreementFactory.generateDealerAgreement(response,dealer);
+		org.apache.commons.io.IOUtils.copy(pdf, response.getOutputStream());
+		response.flushBuffer();
 	}
 
 }
