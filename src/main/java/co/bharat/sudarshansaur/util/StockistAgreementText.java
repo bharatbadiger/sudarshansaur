@@ -1,27 +1,27 @@
 package co.bharat.sudarshansaur.util;
 
 import co.bharat.sudarshansaur.entity.Address;
-import co.bharat.sudarshansaur.entity.Dealers;
+import co.bharat.sudarshansaur.entity.Stockists;
 
 import java.util.Calendar;
 import java.util.Date;
 
-public class DealerAgreementText {
-    public static String para1(Dealers dealers) {
-        Date createdAt = dealers.getCreatedOn();
+public class StockistAgreementText {
+    public static String para1(Stockists stockists) {
+        Date createdAt = stockists.getCreatedOn();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(createdAt);
         return "This Agreement is executed on this " + calendar.get(Calendar.DAY_OF_MONTH) + " day of " + (calendar.get(Calendar.MONTH) + 1) + " Month " + calendar.get(Calendar.YEAR) + " Year by & between M/s Sudarshan Saur Shakti Pvt. Ltd. a Company Registered under Companies Act 1956 (1 of 1956) having their Registered Office at 5, Tarak Colony, Opp. Ramakrishna Mission Ashrama, Beed Bypass Road, Aurangabad – 431 005 Maharashtra. (Hereinafter referred as “the Company” of the First part)\n";
     }
 
-    public static String para2(Dealers dealers) {
-        Address address = dealers.getAddress();
+    public static String para2(Stockists stockists) {
+        Address address = stockists.getAddress();
         StringBuilder para = new StringBuilder();
-        para.append(dealers.getDealerName() +", "+dealers.getBusinessName() + "\n");
+        para.append(stockists.getStockistName() +", "+stockists.getBusinessName() + "\n");
         para.append("With the permanent Address As: - \n");
         para.append(getFullAddress(address));
         para.append("\n");
-        para.append(dealers.getGstNumber());
+        para.append(stockists.getGstNumber());
         para.append("\n\n");
         System.out.println(para);
         return para.toString();
@@ -31,7 +31,7 @@ public class DealerAgreementText {
         return "\nDealer means any person, company, firm, Dealer, Sub-dealer, Distributor, Stockiest, Super-Stockiest, or any entity who is authorized by “the Company” (with or without agreement inwriting) to sell solar water heating systems directly or indirectly to the Customer/end user.\n";
     }
 
-    public static String para4(Dealers dealer) {
+    public static String para4(Stockists dealer) {
         StringBuilder para = new StringBuilder();
         para.append("\nWHEREAS, a Company appoints\n");
         para.append("M/s. " + dealer.getBusinessName() + ",\n");
@@ -40,7 +40,7 @@ public class DealerAgreementText {
         return para.toString();
     }
 
-    public static String para5(Dealers dealer) {
+    public static String para5(Stockists dealer) {
         return "\nWhereas the Company is engaged in manufacturing of Solar Energy Products and having it’s manufacturing unit at K-240/241, M.I.D.C. Waluj, Aurangabad – 431 136.  Whereas the party at second part has requested to the party at first part to engage or appoint the party at second part as a Dealer of the party at first part, to sell and provide after sales service to the customers of the product of party at first part and therefore the party at first part has agreed to appoint the party at second part as their\n" +
                 "Dealer for the Taluka " + dealer.getAddress().getTaluk() + " District " + dealer.getAddress().getDistrict() + " in the State of " + dealer.getAddress().getState() + " on the following terms and conditions.\n";
     }
@@ -69,11 +69,11 @@ public class DealerAgreementText {
         return para.toString();
     }
 
-    public static String para7(Dealers dealers) {
-        Date createdAt = dealers.getCreatedOn();
+    public static String para7(Stockists stockists) {
+        Date createdAt = stockists.getCreatedOn();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(createdAt);
-        return "Date: " + calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR) + "                           Place: "+dealers.getAddress().getTown();
+        return "Date: " + calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR) + "                           Place: "+stockists.getAddress().getTown();
     }
 
     private static String getFullAddress(Address address) {
