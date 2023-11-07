@@ -57,7 +57,7 @@ public class AgreementFactory {
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-    public static InputStream generateDealerAgreement(HttpServletResponse response, Dealers dealers) throws DocumentException, IOException {
+    public static InputStream generateDealerAgreement(HttpServletResponse response, Dealers dealers, Stockists stockists) throws DocumentException, IOException {
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -79,6 +79,8 @@ public class AgreementFactory {
         document.add(new Paragraph("\nM/S\n", fontParaBold));
         document.add(new Paragraph(DealerAgreementText.para2(dealers), fontPara));
         document.add(new Paragraph("\n(Hereinafter referred as “the Dealer” of the second part)\n", fontParaBold));
+        document.add(new Paragraph("\nM/S\n", fontParaBold));
+        document.add(new Paragraph(StockistAgreementText.para2(stockists), fontPara));
         document.add(new Paragraph(DealerAgreementText.para3(), fontParaBold));
         document.add(new Paragraph(DealerAgreementText.para4(dealers), fontPara));
         document.add(new Paragraph(DealerAgreementText.para5(dealers), fontPara));

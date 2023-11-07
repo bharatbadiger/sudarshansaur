@@ -35,6 +35,7 @@ public class AgreementController {
 	@Autowired
 	private StockistsRepository stockistsRepository;
 
+
 	@GetMapping(value = { "/stockist/{id}" })
 	public void getAgreementForStockist(@PathVariable Long id, HttpServletResponse response) throws IOException {
 		Stockists stockists = stockistsRepository.findById(id)
@@ -55,12 +56,14 @@ public class AgreementController {
 		Dealers dealer = dealersRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("No dealer Found"));
 
+		Stockists stockists = stockistsRepository.findByStockistCode(dealer.getStockistCode()).orElseThrow(() -> new EntityNotFoundException("No Stockist Found"));
+
 		response.setContentType("application/pdf");
 
 		String headerkey = "Content-Disposition";
 		String headervalue = "attachment; filename=Agreement.pdf";
 		response.setHeader(headerkey, headervalue);
-		InputStream pdf = AgreementFactory.generateDealerAgreement(response,dealer);
+		InputStream pdf = AgreementFactory.generateDealerAgreement(response,dealer, stockists);
 		org.apache.commons.io.IOUtils.copy(pdf, response.getOutputStream());
 		response.flushBuffer();
 	}
