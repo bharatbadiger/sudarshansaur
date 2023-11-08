@@ -1,29 +1,23 @@
 package co.bharat.sudarshansaur.controllers;
 
-import co.bharat.sudarshansaur.dto.ResponseData;
-import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
-import co.bharat.sudarshansaur.entity.Dealers;
-import co.bharat.sudarshansaur.entity.Stockists;
-import co.bharat.sudarshansaur.entity.WarrantyRequests;
-import co.bharat.sudarshansaur.enums.AllocationStatus;
-import co.bharat.sudarshansaur.repository.DealersRepository;
-import co.bharat.sudarshansaur.repository.StockistsRepository;
-import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
-import co.bharat.sudarshansaur.service.WarrantyRequestsService;
-import co.bharat.sudarshansaur.util.AgreementFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.*;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import co.bharat.sudarshansaur.entity.Dealers;
+import co.bharat.sudarshansaur.entity.Stockists;
+import co.bharat.sudarshansaur.repository.DealersRepository;
+import co.bharat.sudarshansaur.repository.StockistsRepository;
+import co.bharat.sudarshansaur.util.AgreementFactory;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)

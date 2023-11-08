@@ -23,6 +23,17 @@ public class GlobalExceptionHandler {
 				.statusCode(HttpStatus.CONFLICT.value()).message(ex.getLocalizedMessage()).data(null).build();
 		return new ResponseEntity<>(responseData, HttpStatus.CONFLICT);
     }
+    
+    @ExceptionHandler(EntityValidationException.class)
+    public ResponseEntity<ResponseData<String>> handleEntityValidationException(EntityValidationException ex) {
+        ResponseData<String> responseData = ResponseData.<String>builder()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .message(ex.getErrorMessage()) // Custom message from the exception
+                .data(null)
+                .build();
+        return new ResponseEntity<>(responseData, HttpStatus.CONFLICT);
+    }
+
 	
 	@ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ResponseData<String>> handleEntityNotFoundException(EntityNotFoundException ex) {

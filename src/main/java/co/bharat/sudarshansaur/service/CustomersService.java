@@ -3,7 +3,6 @@ package co.bharat.sudarshansaur.service;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -17,11 +16,8 @@ import org.springframework.stereotype.Service;
 
 import co.bharat.sudarshansaur.dto.CustomersResponseDTO;
 import co.bharat.sudarshansaur.entity.Customers;
-import co.bharat.sudarshansaur.entity.WarrantyRequests;
-import co.bharat.sudarshansaur.enums.AllocationStatus;
-import co.bharat.sudarshansaur.enums.UserStatus;
+import co.bharat.sudarshansaur.exception.handler.EntityValidationException;
 import co.bharat.sudarshansaur.repository.CustomersRepository;
-import co.bharat.sudarshansaur.repository.WarrantyRequestsRepository;
 
 @Service
 public class CustomersService {
@@ -29,9 +25,6 @@ public class CustomersService {
 	@Autowired
 	private CustomersRepository customersRepository;
 	
-	@Autowired
-	private WarrantyRequestsRepository warrantyRequestsRepository;
-
 	public List<Customers> getAllCustomers() {
 		return customersRepository.findAll();
 	}
@@ -53,7 +46,7 @@ public class CustomersService {
 		try {
 			newCustomer = customersRepository.save(customer);
 		} catch(ConstraintViolationException cve) {
-			throw new ConstraintViolationException("User already exists", null);
+			throw new EntityValidationException("User", "Mobile number already exists");
 		}
 		return convertToDTO(newCustomer);
 	}
