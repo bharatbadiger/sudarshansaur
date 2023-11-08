@@ -3,6 +3,7 @@ package co.bharat.sudarshansaur.service;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -43,7 +44,10 @@ public class CustomersService {
 		 * { customer.setStatus(UserStatus.PENDING); }
 		 */
 		System.out.println("Creating user with Mobile No: "+customer.getMobileNo());
-		customersRepository.findByMobileNo(customer.getMobileNo()).orElseThrow(() -> new EntityValidationException("User", "Mobile number already exists"));
+		Optional<Customers> cust = customersRepository.findByMobileNo(customer.getMobileNo());
+		if(cust.isPresent()){
+			throw new EntityValidationException("User", "Mobile No already exists");
+		}
 		System.out.println("No user found for : "+customer.getMobileNo());
 		Customers newCustomer = new Customers();
 		try {
