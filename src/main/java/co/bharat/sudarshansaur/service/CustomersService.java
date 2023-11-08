@@ -42,7 +42,9 @@ public class CustomersService {
 		 * !existingWR.get().isEmpty()) { customer.setStatus(UserStatus.ACTIVE); } else
 		 * { customer.setStatus(UserStatus.PENDING); }
 		 */
+		System.out.println("Creating user with Mobile No: "+customer.getMobileNo());
 		customersRepository.findByMobileNo(customer.getMobileNo()).orElseThrow(() -> new EntityValidationException("User", "Mobile number already exists"));
+		System.out.println("No user found for : "+customer.getMobileNo());
 		Customers newCustomer = new Customers();
 		try {
 			newCustomer = customersRepository.save(customer);
