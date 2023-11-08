@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -48,7 +49,12 @@ public class CustomersService {
 		 * !existingWR.get().isEmpty()) { customer.setStatus(UserStatus.ACTIVE); } else
 		 * { customer.setStatus(UserStatus.PENDING); }
 		 */
-		Customers newCustomer = customersRepository.save(customer);
+		Customers newCustomer = new Customers();
+		try {
+			newCustomer = customersRepository.save(customer);
+		} catch(ConstraintViolationException cve) {
+			throw new ConstraintViolationException("User already exists", null);
+		}
 		return convertToDTO(newCustomer);
 	}
 	
