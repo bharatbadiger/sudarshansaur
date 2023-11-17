@@ -78,6 +78,7 @@ public class AgreementFactory {
         document.add(new Paragraph("AND\n", fontParaBoldUnderline));
         document.add(new Paragraph("\nM/S\n", fontParaBold));
         document.add(new Paragraph(DealerAgreementText.para2(dealers), fontPara));
+        document.add(new Paragraph("AND\n", fontParaBoldUnderline));
         document.add(new Paragraph("\n(Hereinafter referred as “the Dealer” of the second part)\n", fontParaBold));
         document.add(new Paragraph("\nM/S\n", fontParaBold));
         document.add(new Paragraph(StockistAgreementText.para2(stockists), fontPara));
