@@ -147,11 +147,14 @@ public class WarrantyRequests {
 	@Column(length = 10)
 	private String lon;
 
-	private boolean photoChecked = false;
-	
-	private boolean otherInfoChecked = false;
+	@Column(columnDefinition = "BIT default b'0'")
+	private boolean photoChecked;
 
-	private boolean paymentDone = false;
+	@Column(columnDefinition = "BIT default b'0'")
+	private boolean otherInfoChecked;
+
+	@Column(columnDefinition = "BIT default b'0'")
+	private boolean paymentDone;
 	
 	@Column(length = 40)
 	private String verifiedBy;
