@@ -146,12 +146,12 @@ public class WarrantyRequests {
 
 	@Column(length = 10)
 	private String lon;
-	
-	private boolean photoChecked;
-	
-	private boolean otherInfoChecked;
 
-	private boolean paymentDone;
+	private boolean photoChecked = false;
+	
+	private boolean otherInfoChecked = false;
+
+	private boolean paymentDone = false;
 	
 	@Column(length = 40)
 	private String verifiedBy;
