@@ -39,7 +39,9 @@ public class StatusCountService {
         		"UNION ALL\r\n" + 
         		"SELECT 'stockists' AS entity, s.status, COUNT(1) AS count FROM stockists s GROUP BY s.status\r\n" + 
         		"UNION ALL\r\n" + 
-        		"SELECT 'warrantyDetails' AS entity, w.allocation_status AS status, COUNT(1) AS count FROM warranty_details w GROUP BY w.allocation_status";
+        		"SELECT 'warrantyDetails' AS entity, w.allocation_status AS status, COUNT(1) AS count FROM warranty_details w GROUP BY w.allocation_status\r\n"+
+                "UNION ALL\r\n" +
+                "SELECT 'warrantyRequests' AS entity, wr.status AS status, COUNT(1) AS count FROM warranty_requests wr GROUP BY wr.status";
         return entityManager.createNativeQuery(sqlQuery).getResultList();
         /*        List<StatusCountDTO> statusCounts = new ArrayList<>();
 

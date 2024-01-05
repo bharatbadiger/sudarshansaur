@@ -12,7 +12,11 @@ import co.bharat.sudarshansaur.enums.AllocationStatus;
 public interface WarrantyRequestsRepository extends JpaRepository<WarrantyRequests,Long>{
 	
 	List<WarrantyRequests> findAllByOrderByCreatedOnDesc();
-	
+
+	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.status = ':status' order by wr.createdOn desc")
+	List<WarrantyRequests> findAllWarrantyRequestsByStatus(String status);
+
+
 	Optional<WarrantyRequests> findByWarrantyDetailsWarrantySerialNo(String warrantySerialNo);
 	
 	boolean existsByWarrantyDetailsWarrantySerialNo(String warrantySerialNo);

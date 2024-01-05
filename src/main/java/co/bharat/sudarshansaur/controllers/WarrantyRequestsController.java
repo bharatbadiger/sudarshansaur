@@ -45,6 +45,13 @@ public class WarrantyRequestsController {
 				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
 	}
 
+	@GetMapping(value = { "/status/{status}" })
+	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestByStatus(@PathVariable String status) {
+		List<WarrantyRequests> warrantyRequests = warrantyRequestsRepository.findAllWarrantyRequestsByStatus(status);
+		return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
+	}
+
 	@GetMapping
 	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestsByAttributes(
 			@RequestParam(name = "warrantySerialNo", required = false) String warrantySerialNo,
@@ -60,7 +67,7 @@ public class WarrantyRequestsController {
 			//customers = warrantyRequestsRepository.findByInvoiceNo(invoiceNo);
 		} else if (allocationStatus != null) {
 			// Fetch users by societyCode and relationship
-			//customers = warrantyRequestsRepository.findByAllocationStatus(allocationStatus);
+//			warrantyRequestsList = warrantyRequestsRepository.findAllPendingWarrantyRequests();
 		} else {
 			// Return all users if no params are specified
 			warrantyRequestsList = warrantyRequestsRepository.findAllByOrderByCreatedOnDesc();
