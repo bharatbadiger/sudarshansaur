@@ -45,6 +45,14 @@ public class WarrantyRequestsController {
 				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
 	}
 
+	@GetMapping(value = { "/serialNo/{id}" })
+	public ResponseEntity<ResponseData<WarrantyRequests>> getWarrantyRequest(@PathVariable String id) {
+		WarrantyRequests warrantyRequests = warrantyRequestsRepository.findByWarrantyDetailsWarrantySerialNo(id)
+				.orElseThrow(() -> new EntityNotFoundException("No WarrantyRequest Found"));
+		return new ResponseEntity<>(new ResponseData<WarrantyRequests>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
+	}
+
 	@GetMapping(value = { "/status/{status}" })
 	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestByStatus(@PathVariable String status) {
 		List<WarrantyRequests> warrantyRequests = warrantyRequestsRepository.findAllWarrantyRequestsByStatus(status);
@@ -64,7 +72,7 @@ public class WarrantyRequestsController {
 			//customers = warrantyRequestsRepository.findByInvoiceNoAndAllocationStatus(invoiceNo, allocationStatus);
 		} else if (warrantySerialNo != null) {
 			// Fetch users by roleName and relationship
-			//customers = warrantyRequestsRepository.findByInvoiceNo(invoiceNo);
+//			customers = warrantyRequestsRepository.findByInvoiceNo(invoiceNo);
 		} else if (allocationStatus != null) {
 			// Fetch users by societyCode and relationship
 //			warrantyRequestsList = warrantyRequestsRepository.findAllPendingWarrantyRequests();
