@@ -13,8 +13,8 @@ public interface WarrantyRequestsRepository extends JpaRepository<WarrantyReques
 	
 	List<WarrantyRequests> findAllByOrderByCreatedOnDesc();
 
-	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.status = ':status' order by wr.createdOn desc")
-	List<WarrantyRequests> findAllWarrantyRequestsByStatus(String status);
+//	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.status = :status order by wr.createdOn desc")
+	List<WarrantyRequests> findAllByStatusOrderByCreatedOnDesc(AllocationStatus status);
 
 
 	Optional<WarrantyRequests> findByWarrantyDetailsWarrantySerialNo(String warrantySerialNo);
@@ -27,8 +27,8 @@ public interface WarrantyRequestsRepository extends JpaRepository<WarrantyReques
 	
 	Optional<List<WarrantyRequests>> findByCustomersCustomerIdAndStatus(long customerId, AllocationStatus status);
 	
-	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.customers.customerId = :customerId AND wr.status = 'PENDING'")
-    List<WarrantyRequests> findPendingWarrantyRequestsByCustomerId(long customerId);
+//	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.customers.customerId = :customerId AND wr.status = 'PENDING'")
+//    List<WarrantyRequests> findPendingWarrantyRequestsByCustomerId(long customerId);
 	
 	/*
 	 * // Define a custom query to select warrantySerialNo values

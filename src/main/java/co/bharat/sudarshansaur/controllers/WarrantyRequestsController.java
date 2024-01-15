@@ -54,8 +54,9 @@ public class WarrantyRequestsController {
 	}
 
 	@GetMapping(value = { "/status/{status}" })
-	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestByStatus(@PathVariable String status) {
-		List<WarrantyRequests> warrantyRequests = warrantyRequestsRepository.findAllWarrantyRequestsByStatus(status);
+	public ResponseEntity<ResponseData<List<WarrantyRequests>>> getWarrantyRequestByStatus(@PathVariable AllocationStatus status) {
+		List<WarrantyRequests> warrantyRequests = warrantyRequestsRepository.findAllByStatusOrderByCreatedOnDesc(status);
+		System.out.println("status : "+status);
 		return new ResponseEntity<>(new ResponseData<List<WarrantyRequests>>("WarrantyRequest Fetched Successfully",
 				HttpStatus.OK.value(), warrantyRequests, null), HttpStatus.OK);
 	}
