@@ -82,5 +82,6 @@ public class Customers implements Users{
 	private Date lastLogin;
 
 	private String image;
+	private String installerMobile;
 
 }

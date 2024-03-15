@@ -38,4 +38,6 @@ public class CustomersResponseDTO implements Users {
 
 	private String image;
 
+	private String installerMobile;
+
 }

@@ -13,7 +13,7 @@ public interface WarrantyRequestsRepository extends JpaRepository<WarrantyReques
 	
 	List<WarrantyRequests> findAllByOrderByCreatedOnDesc();
 
-//	@Query("SELECT wr FROM WarrantyRequests wr WHERE wr.status = :status order by wr.createdOn desc")
+//	@Query("`SELECT wr FROM WarrantyRequests wr WHERE wr.status = :status order by wr.createdOn desc`")
 	List<WarrantyRequests> findAllByStatusOrderByCreatedOnDesc(AllocationStatus status);
 
 
