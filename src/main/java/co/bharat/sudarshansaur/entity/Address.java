@@ -43,4 +43,17 @@ public class Address {
 	@Column(length = 6)
 	private String zipCode;
 
+	@Override
+	public String toString() {
+		return houseNo + ", " +
+				area + ", " +
+				street1 + ", " +
+				(street2.isEmpty() ? "" : street2 + ", ") +
+				(landmark.isEmpty() ? "" : "Near " + landmark + ", ") +
+				town + ", " +
+				taluk + ", " +
+				district + ", " +
+				state + ", " +
+				zipCode;
+	}
 }
