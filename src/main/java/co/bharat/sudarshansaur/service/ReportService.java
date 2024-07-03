@@ -54,7 +54,7 @@ public class ReportService {
                         .capacity(request.getWarrantyDetails().getLPD())
                         .model(request.getWarrantyDetails().getModel())
                         .invoiceNumber(request.getInvoiceNumber())
-                        .invoiceNumber(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
+                        .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
                         .quantity("1")
                         .installationDate(request.getInstallationDate())
                         .serialNumber(request.getWarrantyDetails().getWarrantySerialNo())
