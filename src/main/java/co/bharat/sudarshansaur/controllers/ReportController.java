@@ -28,10 +28,12 @@ public class ReportController {
     private ReportService reportService;
 
     @GetMapping(value = {"/getCDMReport"})
-    public ResponseEntity<InputStreamResource> getCDMReport() throws IOException {
+    public ResponseEntity<InputStreamResource> getCDMReport() throws IOException, IllegalAccessException {
         System.out.println("inside getCDMReport");
         List<CDMReportDTO> list = reportService.cdmReport();
-        ByteArrayInputStream byteArrayInputStream = CsvUtil.generateCSV(list);
+        CsvUtil<CDMReportDTO> csvUtil = new CsvUtil<>(CDMReportDTO.class);
+
+        ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=cdmreport.csv");
