@@ -31,9 +31,13 @@ public class ReportController {
     public ResponseEntity<InputStreamResource> getCDMReport() throws IOException, IllegalAccessException {
         System.out.println("inside getCDMReport");
         List<CDMReportDTO> list = reportService.cdmReport();
-        CsvUtil<CDMReportDTO> csvUtil = new CsvUtil<>(CDMReportDTO.class);
 
-        ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list);
+        CsvUtil<CDMReportDTO> csvUtil = new CsvUtil<>(CDMReportDTO.class);
+        List<String> customHeaders = Arrays.asList("CDM Number", "Customer's Name", "Customer's Address", "District",
+                "State or Union Territory", "Customer's Phone No.", "Dealer", "Place",
+                "Capacity (LPD)", "Model", "Invoice Number", "Invoice Date",
+                "Total Qty", "Installation date", "System Serial Number");
+        ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list,customHeaders);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=cdmreport.csv");

@@ -60,19 +60,16 @@ public class CsvUtil<T> {
         this.type = type;
     }
 
-    public ByteArrayInputStream generateCSV(List<T> list) throws IOException, IllegalAccessException {
+    public ByteArrayInputStream generateCSV(List<T> list, List<String> headers) throws IOException, IllegalAccessException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // Extract headers from the class fields
-        String[] headers = extractHeaders();
-
-        // Define CSV format with extracted headers
-        final CSVFormat format = CSVFormat.DEFAULT.withHeader(headers);
+        // Define CSV format with custom headers
+        final CSVFormat format = CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0]));
 
         try (CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format)) {
             for (T item : list) {
                 // Extract values for each field and print as CSV record
-                Object[] values = extractValues(item, headers.length);
+                Object[] values = extractValues(item, headers.size());
                 csvPrinter.printRecord(values);
             }
         }
@@ -81,20 +78,10 @@ public class CsvUtil<T> {
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-    // Helper method to extract headers from the class fields
-    private String[] extractHeaders() {
-        Field[] fields = type.getDeclaredFields();
-        String[] headers = new String[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            headers[i] = fields[i].getName();
-        }
-        return headers;
-    }
-
     // Helper method to extract values from an object instance
     private Object[] extractValues(T item, int numFields) throws IllegalAccessException {
         Object[] values = new Object[numFields];
-        Field[] fields = type.getDeclaredFields();
+        java.lang.reflect.Field[] fields = type.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
             values[i] = fields[i].get(item);
