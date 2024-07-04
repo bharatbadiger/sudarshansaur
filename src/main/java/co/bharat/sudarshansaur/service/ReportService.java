@@ -53,7 +53,7 @@ public class ReportService {
                         .stockistPlace(request.getWarrantyDetails().getCrmStockistDistrict())
                         .capacity(request.getWarrantyDetails().getLPD())
                         .model(request.getWarrantyDetails().getModel())
-                        .invoiceNumber(request.getInvoiceNumber())
+                        .invoiceNumber(request.getWarrantyDetails().getInvoiceNo())
                         .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
                         .quantity("1")
                         .installationDate(request.getInstallationDate())

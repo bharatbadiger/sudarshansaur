@@ -34,7 +34,7 @@ public class ReportController {
 
         CsvUtil<CDMReportDTO> csvUtil = new CsvUtil<>(CDMReportDTO.class);
         List<String> customHeaders = Arrays.asList("CDM Number", "Customer's Name", "Customer's Address", "District",
-                "State or Union Territory", "Customer's Phone No.", "Dealer", "Place",
+                "State or Union Territory", "Customer's Phone No.", "Dealer / (Stockist)", "Place / District",
                 "Capacity (LPD)", "Model", "Invoice Number", "Invoice Date",
                 "Total Qty", "Installation date", "System Serial Number");
         ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list,customHeaders);
