@@ -1,18 +1,17 @@
 package co.bharat.sudarshansaur.service;
 
 import co.bharat.sudarshansaur.dto.CDMReportDTO;
-import co.bharat.sudarshansaur.dto.WarrantyDetailsDTO;
+import co.bharat.sudarshansaur.dto.GuaranteeCardReport;
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
-import co.bharat.sudarshansaur.entity.*;
-import co.bharat.sudarshansaur.repository.CustomersRepository;
+import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,34 +35,73 @@ public class ReportService {
     @Autowired
     private WarrantyDetailsService warrantyDetailsService;
 
-    public List<CDMReportDTO> cdmReport(){
-        System.out.println("inside service cdmReport");
+    public List<CDMReportDTO> cdmReport() {
         List<WarrantyRequestsDTO> warrantyRequestsList = warrantyRequestsService.getAllWarrantyRequests();
-        System.out.println("Fetched " + warrantyRequestsList.size() + " items");
         List<CDMReportDTO> list = new ArrayList<>();
         warrantyRequestsList.forEach(request -> list.add(
-                CDMReportDTO.builder()
-                        .cdmNumber("")
-                        .customerName(request.getCustomers().getCustomerName())
-                        .customerFullAddress(request.getInstallationAddress().toString())
-                        .customerDistrict(request.getInstallationAddress().getDistrict())
-                        .state(request.getInstallationAddress().getState())
-                        .phone(request.getCustomers().getMobileNo())
-                        .stockistFirmName(request.getWarrantyDetails().getCrmStockistName())
-                        .stockistPlace(request.getWarrantyDetails().getCrmStockistDistrict())
-                        .capacity(request.getWarrantyDetails().getLPD())
-                        .model(request.getWarrantyDetails().getModel())
-                        .invoiceNumber(request.getWarrantyDetails().getInvoiceNo())
-                        .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
-                        .quantity("1")
-                        .installationDate(request.getInstallationDate())
-                        .serialNumber(request.getWarrantyDetails().getWarrantySerialNo())
-                        .build()
+                        CDMReportDTO.builder()
+                                .cdmNumber("")
+                                .customerName(request.getCustomers().getCustomerName())
+                                .customerFullAddress(request.getInstallationAddress().toString())
+                                .customerDistrict(request.getInstallationAddress().getDistrict())
+                                .state(request.getInstallationAddress().getState())
+                                .phone(request.getCustomers().getMobileNo())
+                                .stockistFirmName(request.getWarrantyDetails().getCrmStockistName())
+                                .stockistPlace(request.getWarrantyDetails().getCrmStockistDistrict())
+                                .capacity(request.getWarrantyDetails().getLPD())
+                                .model(request.getWarrantyDetails().getModel())
+                                .invoiceNumber(request.getWarrantyDetails().getInvoiceNo())
+                                .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
+                                .quantity("1")
+                                .installationDate(request.getInstallationDate())
+                                .serialNumber(request.getWarrantyDetails().getWarrantySerialNo())
+                                .build()
                 )
         );
 
         return list;
     }
 
+    public List<GuaranteeCardReport> guaranteeCardReport() {
+        List<Stockists> stockistsList = stockistsService.getAllStockists();
+        Map<String, Stockists> stockistsMap = stockistsList.stream()
+                .collect(Collectors.toMap(Stockists::getMobileNo, stockist -> stockist));
 
+
+        List<WarrantyRequestsDTO> warrantyRequestsList = warrantyRequestsService.getAllWarrantyRequests();
+        List<GuaranteeCardReport> list = new ArrayList<>();
+        AtomicInteger serialNumber = new AtomicInteger(1);
+        warrantyRequestsList.forEach(request -> {
+            list.add(GuaranteeCardReport.builder()
+                    .srNo(String.valueOf(serialNumber.get()))
+                    .createdDate(DateUtil.formatDate(request.getCreatedOn()))
+                    .customerName(request.getCustomers().getCustomerName())
+                    .phone1(request.getCustomers().getMobileNo())
+                    .phone2(request.getMobile2())
+                    .customerFullAddress(request.getInstallationAddress().toString())
+                    .customerTaluka(request.getInstallationAddress().getTaluk())
+                    .customerDistrict(request.getInstallationAddress().getDistrict())
+                    .state(request.getInstallationAddress().getState())
+                    .serialNumber(request.getWarrantyDetails().getWarrantySerialNo())
+                    .itemDescription(request.getWarrantyDetails().getItemDescription())
+                    .capacity(request.getWarrantyDetails().getLPD())
+                    .model(request.getWarrantyDetails().getModel())
+                    .invoiceNumber(request.getWarrantyDetails().getInvoiceNo())
+                    .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
+                    .guaranteePeriod(request.getWarrantyDetails().getGuaranteePeriod())
+                    .installationDate(request.getInstallationDate())
+                    .stockistName(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getBusinessName())
+                    .stockistDistrict(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getAddress().getDistrict())
+                    .stockistCode(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getStockistCode())
+                    .dealerName(request.getDealerInfo().getName())
+                    .dealerMobile(request.getDealerInfo().getMobile())
+                    .dealerPlace(request.getDealerInfo().getPlace())
+                    .verificationDate(request.getVerifiedDate())
+                    .verifiedBy(request.getVerifiedBy())
+                    .photoStatus(request.getImages().getImgSystemSerialNo().isEmpty() || request.getImages().getImgLiveSystem().isEmpty() ? "Pending" : "Uploaded")
+                    .build());
+            serialNumber.getAndIncrement();
+        });
+        return list;
+    }
 }

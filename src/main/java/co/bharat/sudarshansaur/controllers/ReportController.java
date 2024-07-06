@@ -1,6 +1,7 @@
 package co.bharat.sudarshansaur.controllers;
 
 import co.bharat.sudarshansaur.dto.CDMReportDTO;
+import co.bharat.sudarshansaur.dto.GuaranteeCardReport;
 import co.bharat.sudarshansaur.dto.ResponseData;
 import co.bharat.sudarshansaur.entity.StockistDealerWarranty;
 import co.bharat.sudarshansaur.service.ReportService;
@@ -41,6 +42,24 @@ public class ReportController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=cdmreport.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(new InputStreamResource(byteArrayInputStream));
+    }
+
+    @GetMapping(value = {"/getGuaranteeCardReport"})
+    public ResponseEntity<InputStreamResource> getGuaranteeCardReport() throws IOException, IllegalAccessException {
+        System.out.println("inside getGuaranteeCardReport");
+        List<GuaranteeCardReport> list = reportService.guaranteeCardReport();
+
+        CsvUtil<GuaranteeCardReport> csvUtil = new CsvUtil<>(GuaranteeCardReport.class);
+        List<String> customHeaders = Arrays.asList("Sr. No","Create Date","Customer Name","Mobile Number1","Mobile Number2","Full Address","Taluka","District	","State	","System Serial No.","Item Description	","LPD	","Model	","Company Invoice Date","Company Invoice Number","Guarantee Period","Installation Date","Stockist Code","Business Name (Stockist)","Stockist District","Dealer Name","Dealer Mobile","Dealer Place","Verification Date","Verify by (Name)","Photos Status");
+        ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list,customHeaders);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=GuaranteeCardReport.csv");
 
         return ResponseEntity.ok()
                 .headers(headers)
