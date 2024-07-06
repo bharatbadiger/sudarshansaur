@@ -3,6 +3,7 @@ package co.bharat.sudarshansaur.service;
 import co.bharat.sudarshansaur.dto.CDMReportDTO;
 import co.bharat.sudarshansaur.dto.GuaranteeCardReport;
 import co.bharat.sudarshansaur.dto.WarrantyRequestsDTO;
+import co.bharat.sudarshansaur.entity.Address;
 import co.bharat.sudarshansaur.entity.Stockists;
 import co.bharat.sudarshansaur.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,8 @@ public class ReportService {
                                 .cdmNumber("")
                                 .customerName(request.getCustomers().getCustomerName())
                                 .customerFullAddress(request.getInstallationAddress().toString())
-                                .customerDistrict(request.getInstallationAddress().getDistrict())
-                                .state(request.getInstallationAddress().getState())
+                                .customerDistrict(Optional.ofNullable(request.getInstallationAddress()).map(Address::getDistrict).orElse(""))
+                                .state(Optional.ofNullable(request.getInstallationAddress()).map(Address::getState).orElse(""))
                                 .phone(request.getCustomers().getMobileNo())
                                 .stockistFirmName(request.getWarrantyDetails().getCrmStockistName())
                                 .stockistPlace(request.getWarrantyDetails().getCrmStockistDistrict())
@@ -79,9 +81,9 @@ public class ReportService {
                     .phone1(request.getCustomers().getMobileNo())
                     .phone2(request.getMobile2())
                     .customerFullAddress(request.getInstallationAddress().toString())
-                    .customerTaluka(request.getInstallationAddress().getTaluk())
-                    .customerDistrict(request.getInstallationAddress().getDistrict())
-                    .state(request.getInstallationAddress().getState())
+                    .customerTaluka(Optional.ofNullable(request.getInstallationAddress()).map(Address::getTaluk).orElse(""))
+                    .customerDistrict(Optional.ofNullable(request.getInstallationAddress()).map(Address::getDistrict).orElse(""))
+                    .state(Optional.ofNullable(request.getInstallationAddress()).map(Address::getState).orElse(""))
                     .serialNumber(request.getWarrantyDetails().getWarrantySerialNo())
                     .itemDescription(request.getWarrantyDetails().getItemDescription())
                     .capacity(request.getWarrantyDetails().getLPD())
@@ -98,7 +100,7 @@ public class ReportService {
                     .dealerPlace(request.getDealerInfo().getPlace())
                     .verificationDate(request.getVerifiedDate())
                     .verifiedBy(request.getVerifiedBy())
-                    .photoStatus(request.getImages().getImgSystemSerialNo().isEmpty() || request.getImages().getImgLiveSystem().isEmpty() ? "Pending" : "Uploaded")
+                    .photoStatus(request.getImages() == null || request.getImages().getImgSystemSerialNo().isEmpty() || request.getImages().getImgLiveSystem().isEmpty() ? "Pending" : "Uploaded")
                     .build());
             serialNumber.getAndIncrement();
         });
