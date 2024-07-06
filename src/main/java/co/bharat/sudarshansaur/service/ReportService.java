@@ -91,7 +91,7 @@ public class ReportService {
                     .guaranteePeriod(request.getWarrantyDetails().getGuaranteePeriod())
                     .installationDate(request.getInstallationDate())
                     .stockistName(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getBusinessName())
-                    .stockistDistrict(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getAddress().getDistrict())
+                    .stockistDistrict(request.getWarrantyDetails().getCrmStockistDistrict())
                     .stockistCode(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getStockistCode())
                     .dealerName(request.getDealerInfo().getName())
                     .dealerMobile(request.getDealerInfo().getMobile())
