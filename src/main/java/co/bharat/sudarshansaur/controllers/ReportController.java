@@ -55,7 +55,7 @@ public class ReportController {
         List<GuaranteeCardReport> list = reportService.guaranteeCardReport();
 
         CsvUtil<GuaranteeCardReport> csvUtil = new CsvUtil<>(GuaranteeCardReport.class);
-        List<String> customHeaders = Arrays.asList("Sr. No","Create Date","Customer Name","Mobile Number1","Mobile Number2","Full Address","Taluka","District	","State	","System Serial No.","Item Description	","LPD	","Model	","Company Invoice Date","Company Invoice Number","Guarantee Period","Installation Date","Stockist Code","Business Name (Stockist)","Stockist District","Dealer Name","Dealer Mobile","Dealer Place","Verification Date","Verify by (Name)","Photos Status");
+        List<String> customHeaders = Arrays.asList("Sr. No","Create Date","Customer Name","Mobile Number1","Mobile Number2","Full Address","Taluka","District","State","System Serial No.","Item Description	","LPD	","Model	","Company Invoice Date","Company Invoice Number","Guarantee Period","Installation Date","Stockist Code","Stockist Name","Stockist District","Dealer Name","Dealer Mobile","Dealer Place","Verification Date","Verify by (Name)","Photos Status");
         ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list,customHeaders);
 
         HttpHeaders headers = new HttpHeaders();

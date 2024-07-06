@@ -92,7 +92,7 @@ public class ReportService {
                     .invoiceDate(DateUtil.formatDate(request.getWarrantyDetails().getInstallationDate()))
                     .guaranteePeriod(request.getWarrantyDetails().getGuaranteePeriod())
                     .installationDate(request.getInstallationDate())
-                    .stockistName(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getBusinessName())
+                    .stockistName(request.getWarrantyDetails().getCrmStockistName())
                     .stockistDistrict(request.getWarrantyDetails().getCrmStockistDistrict())
                     .stockistCode(stockistsMap.getOrDefault(request.getWarrantyDetails().getCrmStockistMobileNo(), new Stockists()).getStockistCode())
                     .dealerName(request.getDealerInfo().getName())
