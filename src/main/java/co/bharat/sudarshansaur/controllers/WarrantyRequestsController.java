@@ -1,11 +1,14 @@
 package co.bharat.sudarshansaur.controllers;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
+import co.bharat.sudarshansaur.dto.WarrantyCardStatusCountDTO;
+import co.bharat.sudarshansaur.service.StatusCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +39,9 @@ public class WarrantyRequestsController {
 	private WarrantyRequestsRepository warrantyRequestsRepository;
 	@Autowired
 	private WarrantyRequestsService warrantyRequestsService;
+
+	@Autowired
+	private StatusCountService statusCountService;
 
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<ResponseData<WarrantyRequests>> getWarrantyRequest(@PathVariable Long id) {
@@ -142,5 +148,25 @@ public class WarrantyRequestsController {
 	public ResponseEntity<Void> deleteWarrantyRequest(@PathVariable("id") Long id) {
 		warrantyRequestsRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping(value = { "/warrantyStatus" })
+	public ResponseEntity<ResponseData<WarrantyCardStatusCountDTO>> getWarrantyStatus() {
+		List<BigInteger[]> res =  statusCountService.getWarrantyRequestCount();
+		Object[] row = res.get(0);
+		String approved = row[1].toString();
+		String denied = row[2].toString();
+		String imgUploaded = row[3].toString();
+		String imgNotUploaded = row[4].toString();
+
+
+		WarrantyCardStatusCountDTO dto = WarrantyCardStatusCountDTO.builder()
+				.approved(approved)
+				.denied(denied)
+				.pendingImageUploaded(imgUploaded)
+				.pendingImageNotUploaded(imgNotUploaded)
+				.build();
+		return new ResponseEntity<>(new ResponseData<WarrantyCardStatusCountDTO>("WarrantyRequest Fetched Successfully",
+				HttpStatus.OK.value(), dto, null), HttpStatus.OK);
 	}
 }
