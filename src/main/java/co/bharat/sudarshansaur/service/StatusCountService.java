@@ -89,4 +89,28 @@ public class StatusCountService {
 
         return response;
     }
+
+    /**
+     * SELECT
+     * COUNT(CASE WHEN status = 0 THEN 1 END) AS count_status_0,
+     * COUNT(CASE WHEN status = 4 THEN 1 END) AS count_status_4,
+     * COUNT(CASE WHEN status = 5 THEN 1 END) AS count_status_5,
+     * COUNT(CASE WHEN status = 0 AND img_live_system IS NOT NULL AND img_system_serial_no IS NOT NULL THEN 1 END) AS count_status_0_with_images,
+     * COUNT(CASE WHEN status = 0 AND img_live_system IS NULL AND img_system_serial_no IS NULL THEN 1 END) AS count_status_0_without_images
+     * FROM warranty_requests;
+     *
+     * @return
+     */
+
+    public List<BigInteger[]> getWarrantyRequestCount(){
+        String sqlQuery = "SELECT\n" +
+                "  COUNT(CASE WHEN status = 0 THEN 1 END) AS count_status_0,\n" +
+                "  COUNT(CASE WHEN status = 4 THEN 1 END) AS count_status_4,\n" +
+                "  COUNT(CASE WHEN status = 5 THEN 1 END) AS count_status_5,\n" +
+                "  COUNT(CASE WHEN status = 0 AND img_live_system IS NOT NULL AND img_system_serial_no IS NOT NULL THEN 1 END) AS count_status_0_with_images,\n" +
+                "  COUNT(CASE WHEN status = 0 AND img_live_system IS NULL AND img_system_serial_no IS NULL THEN 1 END) AS count_status_0_without_images\n" +
+                "FROM warranty_requests;\n";
+        List<BigInteger[]> res = entityManager.createNativeQuery(sqlQuery).getResultList();
+        return res;
+    }
 }

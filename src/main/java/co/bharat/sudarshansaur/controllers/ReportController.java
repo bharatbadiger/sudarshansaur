@@ -3,8 +3,10 @@ package co.bharat.sudarshansaur.controllers;
 import co.bharat.sudarshansaur.dto.CDMReportDTO;
 import co.bharat.sudarshansaur.dto.GuaranteeCardReport;
 import co.bharat.sudarshansaur.dto.ResponseData;
+import co.bharat.sudarshansaur.dto.WarrantyCardStatusCountDTO;
 import co.bharat.sudarshansaur.entity.StockistDealerWarranty;
 import co.bharat.sudarshansaur.service.ReportService;
+import co.bharat.sudarshansaur.service.StatusCountService;
 import co.bharat.sudarshansaur.util.CsvUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -27,6 +31,9 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private StatusCountService statusCountService;
 
     @GetMapping(value = {"/getCDMReport"})
     public ResponseEntity<InputStreamResource> getCDMReport() throws IOException, IllegalAccessException {
@@ -60,6 +67,36 @@ public class ReportController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=GuaranteeCardReport.csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(new InputStreamResource(byteArrayInputStream));
+    }
+
+    @GetMapping(value = { "/getWarrantyCount" })
+    public ResponseEntity<InputStreamResource> getWarrantyCount() throws IOException, IllegalAccessException {
+        List<BigInteger[]> res =  statusCountService.getWarrantyRequestCount();
+        Object[] row = res.get(0);
+        String approved = row[1].toString();
+        String denied = row[2].toString();
+        String imgUploaded = row[3].toString();
+        String imgNotUploaded = row[4].toString();
+
+
+        WarrantyCardStatusCountDTO dto = WarrantyCardStatusCountDTO.builder()
+                .approved(approved)
+                .denied(denied)
+                .pendingImageUploaded(imgUploaded)
+                .pendingImageNotUploaded(imgNotUploaded)
+                .build();
+        List<WarrantyCardStatusCountDTO> list = Collections.singletonList(dto);
+        List<String> customHeaders = Arrays.asList("Approved", "Rejected", "Image Uploaded(Pending)", "Image not uploaded(Pending");
+        CsvUtil<WarrantyCardStatusCountDTO> csvUtil = new CsvUtil<>(WarrantyCardStatusCountDTO.class);
+        ByteArrayInputStream byteArrayInputStream = csvUtil.generateCSV(list,customHeaders);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=GuaranteeStatusReport.csv");
 
         return ResponseEntity.ok()
                 .headers(headers)
